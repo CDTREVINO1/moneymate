@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Oxanium, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
 
 const oxaniumSans = Oxanium({
   variable: "--font-oxanium-sans",
@@ -23,11 +24,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${oxaniumSans.variable} ${sourceMono.variable} antialiased font-sans`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableColorScheme
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
