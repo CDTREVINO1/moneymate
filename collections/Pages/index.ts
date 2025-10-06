@@ -1,32 +1,32 @@
-import { authenticated } from "@/access/authenticated"
-import { authenticatedOrPublished } from "@/access/authenticatedOrPublished"
-import { Archive } from "@/blocks/ArchiveBlock/config"
-import { CallToAction } from "@/blocks/CallToAction/config"
-import { Content } from "@/blocks/Content/config"
-import { FormBlock } from "@/blocks/Form/config"
-import { MediaBlock } from "@/blocks/MediaBlock/config"
-import { slugField } from "@/fields/slug"
-import { hero } from "@/heros/config"
-import { populatePublishedAt } from "@/hooks/populatePublishedAt"
-import { generatePreviewPath } from "@/utilities/generatePreviewPath"
+import { admins } from "@/access/admins";
+import { anyone } from "@/access/anyone";
+import { Archive } from "@/blocks/ArchiveBlock/config";
+import { CallToAction } from "@/blocks/CallToAction/config";
+import { Content } from "@/blocks/Content/config";
+import { FormBlock } from "@/blocks/Form/config";
+import { MediaBlock } from "@/blocks/MediaBlock/config";
+import { slugField } from "@/fields/slug";
+import { hero } from "@/heros/config";
+import { populatePublishedAt } from "@/hooks/populatePublishedAt";
+import { generatePreviewPath } from "@/utilities/generatePreviewPath";
 import {
   MetaDescriptionField,
   MetaImageField,
   MetaTitleField,
   OverviewField,
   PreviewField,
-} from "@payloadcms/plugin-seo/fields"
-import type { CollectionConfig } from "payload"
+} from "@payloadcms/plugin-seo/fields";
+import type { CollectionConfig } from "payload";
 
-import { revalidateDelete, revalidatePage } from "./hooks/revalidatePage"
+import { revalidateDelete, revalidatePage } from "./hooks/revalidatePage";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticatedOrPublished,
-    update: authenticated,
+    create: admins,
+    delete: admins,
+    read: anyone,
+    update: admins,
   },
   admin: {
     defaultColumns: ["title", "slug", "updatedAt"],
@@ -36,9 +36,9 @@ export const Pages: CollectionConfig = {
           slug: typeof data?.slug === "string" ? data.slug : "",
           collection: "pages",
           req,
-        })
+        });
 
-        return path
+        return path;
       },
     },
     preview: (data, { req }) =>
@@ -121,4 +121,4 @@ export const Pages: CollectionConfig = {
     },
     maxPerDoc: 50,
   },
-}
+};

@@ -16,8 +16,8 @@ import {
 } from "@payloadcms/richtext-lexical"
 import { CollectionConfig } from "payload"
 
-import { authenticated } from "@/access/authenticated"
-import { authenticatedOrPublished } from "@/access/authenticatedOrPublished"
+import { admins } from "@/access/admins";
+import { anyone } from "@/access/anyone";
 import { Banner } from "@/blocks/Banner/config"
 import { Code } from "@/blocks/Code/config"
 import { MediaBlock } from "@/blocks/MediaBlock/config"
@@ -28,10 +28,10 @@ import { revalidateDelete, revalidatePost } from "./hooks/revalidatePost"
 export const Posts: CollectionConfig = {
   slug: "posts",
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticatedOrPublished,
-    update: authenticated,
+    create: admins,
+    delete: admins,
+    read: anyone,
+    update: admins,
   },
   admin: {
     defaultColumns: ["title", "slug", "updatedAt"],
@@ -41,9 +41,9 @@ export const Posts: CollectionConfig = {
           slug: typeof data?.slug === "string" ? data.slug : "",
           collection: "posts",
           req,
-        })
+        });
 
-        return path
+        return path;
       },
     },
     preview: (data, { req }) =>
@@ -93,7 +93,7 @@ export const Posts: CollectionConfig = {
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
-                  ]
+                  ];
                 },
               }),
               label: false,
@@ -115,7 +115,7 @@ export const Posts: CollectionConfig = {
                   id: {
                     not_in: [id],
                   },
-                }
+                };
               },
               hasMany: true,
               relationTo: "posts",
@@ -174,9 +174,9 @@ export const Posts: CollectionConfig = {
         beforeChange: [
           ({ siblingData, value }) => {
             if (siblingData._status === "published" && !value) {
-              return new Date()
+              return new Date();
             }
-            return value
+            return value;
           },
         ],
       },
@@ -230,4 +230,4 @@ export const Posts: CollectionConfig = {
     },
     maxPerDoc: 50,
   },
-}
+};

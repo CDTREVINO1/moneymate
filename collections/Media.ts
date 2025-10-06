@@ -1,7 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import { anyone } from "@/access/anyone";
-import { authenticated } from "@/access/authenticated";
+import { admins } from "@/access/admins";
 import {
   FixedToolbarFeature,
   InlineToolbarFeature,
@@ -15,10 +15,10 @@ const dirname = path.dirname(filename);
 export const Media: CollectionConfig = {
   slug: "media",
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: admins,
+    delete: admins,
     read: anyone,
-    update: authenticated,
+    update: admins,
   },
   fields: [
     {

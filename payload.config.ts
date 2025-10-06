@@ -42,6 +42,7 @@ export default buildConfig({
   },
   collections: [Users, Media, Pages, Posts, Categories],
   cors: [getServerSideURL()].filter(Boolean),
+  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || "",
   }),

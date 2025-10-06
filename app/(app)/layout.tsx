@@ -9,6 +9,7 @@ import { AdminBar } from "@/components/AdminBar";
 import { ThemeProvider } from "next-themes";
 import { getServerSideURL } from "@/utilities/getURL";
 import { mergeOpenGraph } from "@/utilities/mergeOpenGraph";
+import { AuthProvider } from "./_providers/Auth";
 
 export const dynamic = "force-dynamic";
 
@@ -38,22 +39,24 @@ export default async function RootLayout({
       <body
         className={`${oxaniumSans.variable} ${sourceMono.variable} antialiased font-sans`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableColorScheme
-          disableTransitionOnChange
-        >
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
+        <AuthProvider api="rest">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableColorScheme
+            disableTransitionOnChange
+          >
+            <AdminBar
+              adminBarProps={{
+                preview: isEnabled,
+              }}
+            />
 
-          <Header />
-          {children}
-          <Footer />
-        </ThemeProvider>
+            <Header />
+            {children}
+            <Footer />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
