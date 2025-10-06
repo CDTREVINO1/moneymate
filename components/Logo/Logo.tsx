@@ -18,13 +18,12 @@ export const Logo = (props: Props) => {
   const priority = priorityFromProps || "low"
 
   return (
-    /* eslint-disable @next/next/no-img-element */
     <Image
-      src="/ehh-logo.png"
+      src="/moneymate-logo.png"
       className="dark:brightness-0 dark:invert"
       width={100}
       height={100}
-      alt="Emshappyhens logo"
+      alt="MoneyMate logo"
     />
-  )
+  );
 }

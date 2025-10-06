@@ -1,11 +1,5 @@
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import PageTemplate, { generateMetadata } from "./[slug]/page";
 
-export default function Home() {
-  return (
-    <div className="p-4 space-y-4">
-      <div className="flex items-center gap-4">
-        <ThemeToggle />
-      </div>
-    </div>
-  );
-}
+export default PageTemplate;
+
+export { generateMetadata };
