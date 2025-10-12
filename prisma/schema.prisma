@@ -1,0 +1,528 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+type MediaSizes {
+    large     MediaSizesLarge
+    medium    MediaSizesMedium
+    og        MediaSizesOg
+    small     MediaSizesSmall
+    square    MediaSizesSquare
+    thumbnail MediaSizesThumbnail
+    xlarge    MediaSizesXlarge
+}
+
+type MediaSizesLarge {
+    filename String
+    filesize Int
+    height   Int
+    mimeType String
+    width    Int
+}
+
+type MediaSizesMedium {
+    filename String
+    filesize Int
+    height   Int
+    mimeType String
+    width    Int
+}
+
+type MediaSizesOg {
+    filename String
+    filesize Int
+    height   Int
+    mimeType String
+    width    Int
+}
+
+type MediaSizesSmall {
+    filename String
+    filesize Int
+    height   Int
+    mimeType String
+    width    Int
+}
+
+type MediaSizesSquare {
+    filename String
+    filesize Int
+    height   Int
+    mimeType String
+    width    Int
+}
+
+type MediaSizesThumbnail {
+    filename String
+    filesize Int
+    height   Int
+    mimeType String
+    width    Int
+}
+
+type MediaSizesXlarge {
+    filename String
+    filesize Int
+    height   Int
+    mimeType String
+    width    Int
+}
+
+type PagesHero {
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    links    Json?
+    media    String            @db.ObjectId
+    richText PagesHeroRichText
+    type     String
+}
+
+type PagesHeroRichText {
+    root PagesHeroRichTextRoot
+}
+
+type PagesHeroRichTextRoot {
+    children  PagesHeroRichTextRootChildren[]
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    direction Json?
+    format    String
+    indent    Int
+    type      String
+    version   Int
+}
+
+type PagesHeroRichTextRootChildren {
+    children   PagesHeroRichTextRootChildrenChildren[]
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    direction  Json?
+    format     String
+    indent     Int
+    textFormat Int
+    textStyle  String
+    type       String
+    version    Int
+}
+
+type PagesHeroRichTextRootChildrenChildren {
+    detail  Int
+    format  Int
+    mode    String
+    style   String
+    text    String
+    type    String
+    version Int
+}
+
+type PagesLayout {
+    blockType String
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    columns   Json?
+    id        String
+}
+
+type PagesMeta {
+    description String
+    title       String
+}
+
+type PagesVersionsVersion {
+    status    String                       @map("_status")
+    createdAt DateTime                     @db.Date
+    hero      PagesVersionsVersionHero
+    layout    PagesVersionsVersionLayout[]
+    meta      PagesVersionsVersionMeta
+    slug      String
+    slugLock  Boolean
+    title     String
+    updatedAt DateTime                     @db.Date
+}
+
+type PagesVersionsVersionHero {
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    links    Json?
+    media    String?                           @db.ObjectId
+    richText PagesVersionsVersionHeroRichText?
+    type     String
+}
+
+type PagesVersionsVersionHeroRichText {
+    root PagesVersionsVersionHeroRichTextRoot
+}
+
+type PagesVersionsVersionHeroRichTextRoot {
+    children  PagesVersionsVersionHeroRichTextRootChildren[]
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    direction Json?
+    format    String
+    indent    Int
+    type      String
+    version   Int
+}
+
+type PagesVersionsVersionHeroRichTextRootChildren {
+    children   PagesVersionsVersionHeroRichTextRootChildrenChildren[]
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    direction  Json?
+    format     String
+    indent     Int
+    textFormat Int
+    textStyle  String
+    type       String
+    version    Int
+}
+
+type PagesVersionsVersionHeroRichTextRootChildrenChildren {
+    detail  Int
+    format  Int
+    mode    String
+    style   String
+    text    String
+    type    String
+    version Int
+}
+
+type PagesVersionsVersionLayout {
+    blockType String
+    /// Could not determine type: the field only had null or empty values in the sample set.
+    columns   Json?
+    id        String
+}
+
+type PagesVersionsVersionMeta {
+    description String?
+    title       String?
+}
+
+type PayloadPreferencesUser {
+    relationTo String
+    value      String @db.ObjectId
+}
+
+type PayloadPreferencesValue {
+    editViewType String?
+    fields       PayloadPreferencesValueFields?
+}
+
+type PayloadPreferencesValueFields {
+    index_1 PayloadPreferencesValueFieldsIndex1 @map("_index-1")
+}
+
+type PayloadPreferencesValueFieldsIndex1 {
+    tabIndex Int
+}
+
+type PostsVersionsVersion {
+    /// Field referred in an index, but found no data to define the type.
+    status    Json? @map("_status")
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    slug      Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+}
+
+type UsersSessions {
+    createdAt DateTime @db.Date
+    expiresAt DateTime @db.Date
+    id        String
+}
+
+model pages_versions {
+    id        String               @id @default(auto()) @map("_id") @db.ObjectId
+    v         Int                  @map("__v")
+    autosave  Boolean
+    createdAt DateTime             @db.Date
+    latest    Boolean?
+    parent    String               @db.ObjectId
+    updatedAt DateTime             @db.Date
+    version   PagesVersionsVersion
+
+    @@index([autosave], map: "autosave_1")
+    @@index([parent], map: "parent_1")
+    @@index([version.slug], map: "version.slug_1")
+    @@index([version.updatedAt], map: "version.updatedAt_1")
+    @@index([version.createdAt], map: "version.createdAt_1")
+    @@index([version.status], map: "version._status_1")
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([latest], map: "latest_1")
+    @@map("_pages_versions")
+}
+
+model posts_versions {
+    id        String                @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    autosave  Json?
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    latest    Json?
+    /// Field referred in an index, but found no data to define the type.
+    parent    Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    version   PostsVersionsVersion?
+
+    @@index([autosave], map: "autosave_1")
+    @@index([parent], map: "parent_1")
+    @@index([version.slug], map: "version.slug_1")
+    @@index([version.updatedAt], map: "version.updatedAt_1")
+    @@index([version.createdAt], map: "version.createdAt_1")
+    @@index([version.status], map: "version._status_1")
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([latest], map: "latest_1")
+    @@map("_posts_versions")
+}
+
+model categories {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    slug      Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([slug], map: "slug_1")
+}
+
+model form_submissions {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@map("form-submissions")
+}
+
+model forms {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+}
+
+model globals {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model media {
+    id        String     @id @default(auto()) @map("_id") @db.ObjectId
+    v         Int        @map("__v")
+    alt       String
+    createdAt DateTime   @db.Date
+    filename  String     @unique(map: "filename_1")
+    filesize  Int
+    focalX    Int
+    focalY    Int
+    height    Int
+    mimeType  String
+    sizes     MediaSizes
+    updatedAt DateTime   @db.Date
+    width     Int
+
+    @@index([sizes.large.filename], map: "sizes.large.filename_1")
+    @@index([sizes.xlarge.filename], map: "sizes.xlarge.filename_1")
+    @@index([sizes.og.filename], map: "sizes.og.filename_1")
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([sizes.thumbnail.filename], map: "sizes.thumbnail.filename_1")
+    @@index([sizes.square.filename], map: "sizes.square.filename_1")
+    @@index([sizes.small.filename], map: "sizes.small.filename_1")
+    @@index([sizes.medium.filename], map: "sizes.medium.filename_1")
+}
+
+model pages {
+    id        String        @id @default(auto()) @map("_id") @db.ObjectId
+    v         Int           @map("__v")
+    status    String        @map("_status")
+    createdAt DateTime      @db.Date
+    hero      PagesHero
+    layout    PagesLayout[]
+    meta      PagesMeta
+    slug      String
+    slugLock  Boolean
+    title     String
+    updatedAt DateTime      @db.Date
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([slug], map: "slug_1")
+    @@index([status], map: "_status_1")
+}
+
+model payload_jobs {
+    id          String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    completedAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    createdAt   Json?
+    /// Field referred in an index, but found no data to define the type.
+    hasError    Json?
+    /// Field referred in an index, but found no data to define the type.
+    processing  Json?
+    /// Field referred in an index, but found no data to define the type.
+    queue       Json?
+    /// Field referred in an index, but found no data to define the type.
+    taskSlug    Json?
+    /// Field referred in an index, but found no data to define the type.
+    totalTried  Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt   Json?
+    /// Field referred in an index, but found no data to define the type.
+    waitUntil   Json?
+
+    @@index([waitUntil], map: "waitUntil_1")
+    @@index([processing], map: "processing_1")
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([completedAt], map: "completedAt_1")
+    @@index([totalTried], map: "totalTried_1")
+    @@index([hasError], map: "hasError_1")
+    @@index([taskSlug], map: "taskSlug_1")
+    @@index([queue], map: "queue_1")
+    @@map("payload-jobs")
+}
+
+model payload_locked_documents {
+    id         String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    createdAt  Json?
+    /// Field referred in an index, but found no data to define the type.
+    document   Json?
+    /// Field referred in an index, but found no data to define the type.
+    globalSlug Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt  Json?
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([document], map: "document_1")
+    @@index([globalSlug], map: "globalSlug_1")
+    @@map("payload-locked-documents")
+}
+
+model payload_migrations {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    v         Int      @map("__v")
+    batch     Int
+    createdAt DateTime @db.Date
+    name      String
+    updatedAt DateTime @db.Date
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@map("payload-migrations")
+}
+
+model payload_preferences {
+    id        String                  @id @default(auto()) @map("_id") @db.ObjectId
+    v         Int                     @map("__v")
+    createdAt DateTime?               @db.Date
+    key       String
+    updatedAt DateTime                @db.Date
+    user      PayloadPreferencesUser
+    value     PayloadPreferencesValue
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([user], map: "user_1")
+    @@index([key], map: "key_1")
+    @@map("payload-preferences")
+}
+
+model posts {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    status    Json?  @map("_status")
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    slug      Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([slug], map: "slug_1")
+    @@index([status], map: "_status_1")
+}
+
+model redirects {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    from      Json?  @unique(map: "from_1")
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+}
+
+model searches {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    /// Field referred in an index, but found no data to define the type.
+    createdAt Json?
+    /// Field referred in an index, but found no data to define the type.
+    doc       Json?
+    /// Field referred in an index, but found no data to define the type.
+    meta      Json?
+    /// Field referred in an index, but found no data to define the type.
+    slug      Json?
+    /// Field referred in an index, but found no data to define the type.
+    updatedAt Json?
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+    @@index([doc], map: "doc_1")
+    @@index([slug], map: "slug_1")
+    @@index([meta], map: "meta_1")
+}
+
+model users {
+    id            String          @id @default(auto()) @map("_id") @db.ObjectId
+    v             Int             @map("__v")
+    createdAt     DateTime        @db.Date
+    email         String          @unique(map: "email_1")
+    hash          String
+    loginAttempts Int
+    roles         String[]
+    salt          String
+    sessions      UsersSessions[]
+    transactions  Transaction[]
+    updatedAt     DateTime        @db.Date
+
+    @@index([createdAt], map: "createdAt_1")
+    @@index([updatedAt], map: "updatedAt_1")
+}
+
+model Transaction {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    description String
+    amount      Float
+    date        DateTime
+    category    String
+    authorId    String   @db.ObjectId
+    author      users    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}

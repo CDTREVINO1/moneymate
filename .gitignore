@@ -205,3 +205,4 @@ public/media/
 
 public/robots.txt
 public/sitemap*.xml
+/generated/prisma

@@ -1,0 +1,255 @@
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { format } from "date-fns";
+import { CalendarIcon, Edit } from "lucide-react";
+
+import { transactionSchema } from "../transaction-schema";
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+
+type EditTransactionModalProps = {
+  transactionId: string;
+  description: string;
+  date: string;
+  amount: number;
+  category: string;
+};
+
+type TransactionData = z.infer<typeof transactionSchema>;
+
+export default function EditTransactionModal({
+  transactionId,
+  description,
+  date,
+  amount,
+  category,
+}: EditTransactionModalProps) {
+  const [open, setOpen] = useState(false);
+
+  const form = useForm<TransactionData>({
+    resolver: zodResolver(transactionSchema),
+    defaultValues: {
+      description: description,
+      amount: amount,
+      category: category,
+      date: new Date(format(date, "yyyy-MM-dd")),
+    },
+  });
+
+  async function onSubmit(data: TransactionData) {
+    console.log("onSubmit called with data:", data);
+
+    try {
+      const response = await fetch("/api/expenses", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          transactionId: transactionId,
+          description: data.description,
+          amount: data.amount,
+          date: data.date,
+          category: data.category,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to update expense");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    setOpen(false);
+    form.reset();
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+        >
+          <Edit className="h-5 w-5" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit transaction</DialogTitle>
+          <DialogDescription>
+            Make changes to your transaction here. Click save when you&apos;re
+            done.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form id="form-edit-transaction" onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-edit-transaction-description">
+                    Description
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Transaction description"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="date"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-edit-transaction-date">
+                    Date
+                  </FieldLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        captionLayout="dropdown"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="amount"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-edit-transaction-amount">
+                    Amount
+                  </FieldLabel>
+                  <div className="relative">
+                    <span className="absolute left-3 top-2 text-gray-500">
+                      $
+                    </span>
+                    <Input
+                      {...field}
+                      type="number"
+                      step="0.01"
+                      id="amount"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="0.00"
+                      className="pl-8"
+                    />
+                  </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="category"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-edit-transaction-category">
+                    Category
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="category"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Category"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+        </form>
+        <DialogFooter>
+          <Field orientation="horizontal">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              form="form-edit-transaction"
+              type="submit"
+              disabled={!form.formState.isDirty}
+              onClick={() => {
+                console.log("Form state:", form.formState);
+                console.log("Form values:", form.getValues());
+              }}
+            >
+              Save changes
+            </Button>
+          </Field>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
