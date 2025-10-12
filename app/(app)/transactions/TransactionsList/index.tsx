@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Trash2, Loader2 } from "lucide-react";
 import EditTransactionModal from "../EditTransactionModal";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
-type Expense = {
+type Transactions = {
   id: string;
   description: string;
   amount: number;
@@ -37,45 +39,49 @@ const categoryLabels: Record<string, string> = {
 };
 
 // IDEA: Change this to a server component and fetch the transactions from here
-
-export default function ExpenseList() {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+export function TransactionsList() {
+  const [transactions, setTransactions] = useState<Transactions[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const fetchExpenses = async () => {
+  const fetchTransactions = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("/api/expenses", {
+      const response = await fetch("/api/transactions", {
         method: "GET",
-        credentials: "include", // Important: includes cookies for Payload auth
+        credentials: "include",
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch expenses");
+        throw new Error("Failed to fetch transactions");
       }
 
       const data = await response.json();
-      setExpenses(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setTransactions(data);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to fetch transactions", {
+        description: errorMessage,
+      });
+      setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this expense?")) {
+    if (!confirm("Are you sure you want to delete this transaction?")) {
       return;
     }
 
     setDeletingId(id);
 
     try {
-      const response = await fetch(`/api/expenses`, {
+      const response = await fetch(`/api/transactions`, {
         method: "DELETE",
         credentials: "include",
         body: JSON.stringify({
@@ -84,24 +90,29 @@ export default function ExpenseList() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to delete expense");
+        throw new Error("Failed to delete transaction");
       }
 
-      // Remove from local state
-      setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+      setTransactions((prev) =>
+        prev.filter((transaction) => transaction.id !== id)
+      );
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete expense");
+      alert(
+        err instanceof Error ? err.message : "Failed to delete transaction"
+      );
     } finally {
       setDeletingId(null);
     }
   };
 
   useEffect(() => {
-    fetchExpenses();
+    fetchTransactions();
   }, []);
 
-  // Calculate total
-  const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const total = transactions.reduce(
+    (sum, transaction) => sum + transaction.amount,
+    0
+  );
 
   if (isLoading) {
     return (
@@ -118,7 +129,7 @@ export default function ExpenseList() {
           {error}
         </div>
         <button
-          onClick={fetchExpenses}
+          onClick={fetchTransactions}
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           Try Again
@@ -127,13 +138,13 @@ export default function ExpenseList() {
     );
   }
 
-  if (expenses.length === 0) {
+  if (transactions.length === 0) {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-          <p className="text-gray-600 text-lg">No expenses yet.</p>
+          <p className="text-gray-600 text-lg">No transactions yet.</p>
           <p className="text-gray-500 mt-2">
-            Start by adding your first expense!
+            Start by adding your first transaction!
           </p>
         </div>
       </div>
@@ -143,7 +154,7 @@ export default function ExpenseList() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Your Expenses</h2>
+        <h2 className="text-2xl font-bold">Your Transactions</h2>
         <div className="text-right">
           <p className="text-sm text-gray-600">Total Spent</p>
           <p className="text-3xl font-bold text-blue-600">
@@ -153,59 +164,61 @@ export default function ExpenseList() {
       </div>
 
       <div className="space-y-3">
-        {expenses.map((expense) => (
+        {transactions.map((transaction) => (
           <div
-            key={expense.id}
+            key={transaction.id}
             className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <h3 className="font-semibold text-lg">
-                    {expense.description}
+                    {transaction.description}
                   </h3>
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      categoryColors[expense.category] || categoryColors.other
+                      categoryColors[transaction.category] ||
+                      categoryColors.other
                     }`}
                   >
-                    {categoryLabels[expense.category] || expense.category}
+                    {categoryLabels[transaction.category] ||
+                      transaction.category}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">
-                  {format(new Date(expense.date), "MMMM d, yyyy")}
+                  {format(new Date(transaction.date), "MMMM d, yyyy")}
                 </p>
               </div>
 
               <div className="flex items-center gap-4">
                 <div className="text-right">
                   <p className="text-2xl font-bold text-gray-900">
-                    ${expense.amount.toFixed(2)}
+                    ${transaction.amount.toFixed(2)}
                   </p>
                 </div>
 
                 <div className="flex gap-2">
                   <EditTransactionModal
-                    transactionId={expense.id}
-                    description={expense.description}
-                    date={expense.date}
-                    amount={expense.amount}
-                    category={expense.category}
+                    transactionId={transaction.id}
+                    description={transaction.description}
+                    date={transaction.date}
+                    amount={transaction.amount}
+                    category={transaction.category}
                   />
 
-                  {/* IDEA: CHanges this to shadcn button component */}
-                  <button
-                    onClick={() => handleDelete(expense.id)}
-                    disabled={deletingId === expense.id}
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleDelete(transaction.id)}
+                    disabled={deletingId === transaction.id}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors disabled:opacity-50"
-                    title="Delete expense"
+                    title="Delete transaction"
                   >
-                    {deletingId === expense.id ? (
+                    {deletingId === transaction.id ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
                       <Trash2 className="h-5 w-5" />
                     )}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -214,7 +227,7 @@ export default function ExpenseList() {
       </div>
 
       <button
-        onClick={fetchExpenses}
+        onClick={fetchTransactions}
         className="mt-6 w-full py-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors font-medium"
       >
         Refresh List

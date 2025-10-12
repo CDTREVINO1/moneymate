@@ -10,6 +10,7 @@ import { ThemeProvider } from "next-themes";
 import { getServerSideURL } from "@/utilities/getURL";
 import { mergeOpenGraph } from "@/utilities/mergeOpenGraph";
 import { AuthProvider } from "./_providers/Auth";
+import { Toaster } from "sonner";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,7 @@ export default async function RootLayout({
 
             <Header />
             {children}
+            <Toaster position="top-right" richColors />
             <Footer />
           </ThemeProvider>
         </AuthProvider>

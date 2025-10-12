@@ -5,8 +5,8 @@ import React, { Fragment } from "react";
 
 import config from "@/payload.config";
 import { HydrateClientUser } from "../_components/HydrateClientUser";
-import { ExpenseInputForm } from "./ExpenseInputForm";
-import ExpenseList from "./ExpenseList";
+import { TransactionInputForm } from "./TransactionInputForm";
+import { TransactionsList } from "./TransactionsList";
 
 export default async function TransactionsPage() {
   const headers = await getHeaders();
@@ -24,9 +24,9 @@ export default async function TransactionsPage() {
       <HydrateClientUser permissions={permissions} user={user} />
       <div>Transactions Page</div>
 
-      <ExpenseInputForm />
+      <TransactionInputForm />
 
-      <ExpenseList />
+      <TransactionsList />
     </Fragment>
   );
 }

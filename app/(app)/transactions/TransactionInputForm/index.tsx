@@ -6,6 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { transactionSchema } from "../transaction-schema";
+import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,12 +27,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -40,7 +35,7 @@ import { Input } from "@/components/ui/input";
 
 type TransactionData = z.infer<typeof transactionSchema>;
 
-export const ExpenseInputForm: React.FC = () => {
+export const TransactionInputForm: React.FC = () => {
   const form = useForm<TransactionData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -55,7 +50,7 @@ export const ExpenseInputForm: React.FC = () => {
     const { amount, category, description, date } = data;
 
     try {
-      const response = await fetch("/api/expenses", {
+      const response = await fetch("/api/transactions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,11 +65,17 @@ export const ExpenseInputForm: React.FC = () => {
       });
 
       const data = await response.json();
-
+      toast.success("Transaction saved successfully!");
+      form.reset()
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create expense");
+        toast.error(data.error || "Failed to create transaction")
       }
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to create transaction", {
+        description: errorMessage,
+      });
       console.log(error);
     }
   }

@@ -9,18 +9,18 @@ export const GET = async (request: Request) => {
   }
 
   try {
-    const expenses = await prisma.expense.findMany({
+    const transactions = await prisma.transaction.findMany({
       where: { authorId: user.id },
       orderBy: {
         date: "desc",
       },
     });
 
-    return Response.json(expenses);
+    return Response.json(transactions);
   } catch (error) {
-    console.error("Error fetching expenses:", error);
+    console.error("Error fetching transactions:", error);
     return Response.json(
-      { error: "Failed to fetch expenses" },
+      { error: "Failed to fetch transactions" },
       { status: 500 }
     );
   }
@@ -44,7 +44,7 @@ export const POST = async (request: Request) => {
       );
     }
 
-    const expense = await prisma.expense.create({
+    const transaction = await prisma.transaction.create({
       data: {
         description,
         amount: parseFloat(amount),
@@ -54,11 +54,11 @@ export const POST = async (request: Request) => {
       },
     });
 
-    return Response.json(expense, { status: 201 });
+    return Response.json(transaction, { status: 201 });
   } catch (error) {
-    console.error("Error creating expense:", error);
+    console.error("Error creating transaction:", error);
     return Response.json(
-      { error: "Failed to create expense" },
+      { error: "Failed to create transaction" },
       { status: 500 }
     );
   }
@@ -75,15 +75,15 @@ export const PATCH = async (request: Request) => {
     const body = await request.json();
     const { description, amount, date, category, transactionId } = body;
 
-    const expense = await prisma.expense.findUnique({
+    const transaction = await prisma.transaction.findUnique({
       where: { id: transactionId },
     });
 
-    if (!expense) {
-      return Response.json({ error: "Expense not found" }, { status: 404 });
+    if (!transaction) {
+      return Response.json({ error: "Transaction not found" }, { status: 404 });
     }
 
-    if (expense.authorId !== user.id) {
+    if (transaction.authorId !== user.id) {
       return Response.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -96,16 +96,16 @@ export const PATCH = async (request: Request) => {
     // Never allow updating authorId
     delete updateData.authorId;
 
-    const updated = await prisma.expense.update({
+    const updated = await prisma.transaction.update({
       where: { id: transactionId },
       data: updateData,
     });
 
     return Response.json(updated);
   } catch (error) {
-    console.error("Error updating expense:", error);
+    console.error("Error updating transaction:", error);
     return Response.json(
-      { error: "Failed to update expense" },
+      { error: "Failed to update transaction" },
       { status: 500 }
     );
   }
@@ -120,32 +120,32 @@ export const DELETE = async (request: Request) => {
 
   try {
     const body = await request.json();
-    const { id: expenseId } = body;
+    const { id: transactionId } = body;
 
-    const expense = await prisma.expense.findUnique({
-      where: { id: expenseId },
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: transactionId },
     });
 
-    if (!expense) {
-      return Response.json({ error: "Expense not found" }, { status: 404 });
+    if (!transaction) {
+      return Response.json({ error: "Transaction not found" }, { status: 404 });
     }
 
-    if (expense.authorId !== user.id) {
+    if (transaction.authorId !== user.id) {
       return Response.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    await prisma.expense.delete({
-      where: { id: expenseId },
+    await prisma.transaction.delete({
+      where: { id: transactionId },
     });
 
     return Response.json({
-      message: "Expense deleted successfully",
-      id: expenseId,
+      message: "Transaction deleted successfully",
+      id: transactionId,
     });
   } catch (error) {
-    console.error("Error deleting expense:", error);
+    console.error("Error deleting transaction:", error);
     return Response.json(
-      { error: "Failed to delete expense" },
+      { error: "Failed to delete transaction" },
       { status: 500 }
     );
   }

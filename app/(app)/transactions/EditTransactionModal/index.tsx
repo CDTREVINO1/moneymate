@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
 import { CalendarIcon, Edit } from "lucide-react";
+import { toast } from "sonner";
 
 import { transactionSchema } from "../transaction-schema";
 
@@ -64,10 +65,8 @@ export default function EditTransactionModal({
   });
 
   async function onSubmit(data: TransactionData) {
-    console.log("onSubmit called with data:", data);
-
     try {
-      const response = await fetch("/api/expenses", {
+      const response = await fetch("/api/transactions", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -84,10 +83,17 @@ export default function EditTransactionModal({
 
       const result = await response.json();
 
+      toast.success("Transaction updated successfully!");
+
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update expense");
+        throw new Error(result.error || "Failed to update transaction");
       }
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to update transaction", {
+        description: errorMessage,
+      });
       console.log(error);
     }
 
@@ -240,10 +246,6 @@ export default function EditTransactionModal({
               form="form-edit-transaction"
               type="submit"
               disabled={!form.formState.isDirty}
-              onClick={() => {
-                console.log("Form state:", form.formState);
-                console.log("Form values:", form.getValues());
-              }}
             >
               Save changes
             </Button>
