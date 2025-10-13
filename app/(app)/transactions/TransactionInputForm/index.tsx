@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { transactionSchema } from "../transaction-schema";
+import { transactionSchema } from "@/lib/transaction-schema";
 import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -32,6 +31,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import CategorySelect from "@/components/ui/category-select";
 
 type TransactionData = z.infer<typeof transactionSchema>;
 
@@ -66,9 +66,9 @@ export const TransactionInputForm: React.FC = () => {
 
       const data = await response.json();
       toast.success("Transaction saved successfully!");
-      form.reset()
+      form.reset();
       if (!response.ok) {
-        toast.error(data.error || "Failed to create transaction")
+        toast.error(data.error || "Failed to create transaction");
       }
     } catch (error) {
       const errorMessage =
@@ -181,27 +181,7 @@ export const TransactionInputForm: React.FC = () => {
                 </Field>
               )}
             />
-            <Controller
-              name="category"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-category">
-                    Category
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="category"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Category"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+            <CategorySelect control={form.control} />
           </FieldGroup>
         </form>
       </CardContent>

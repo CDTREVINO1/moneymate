@@ -5,8 +5,9 @@ import { z } from "zod";
 import { format } from "date-fns";
 import { CalendarIcon, Edit } from "lucide-react";
 import { toast } from "sonner";
+import CategorySelect from "@/components/ui/category-select";
 
-import { transactionSchema } from "../transaction-schema";
+import { transactionSchema } from "@/lib/transaction-schema";
 
 import {
   Dialog,
@@ -20,7 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -214,27 +214,7 @@ export default function EditTransactionModal({
                 </Field>
               )}
             />
-            <Controller
-              name="category"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-category">
-                    Category
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="category"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Category"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+            <CategorySelect control={form.control} />
           </FieldGroup>
         </form>
         <DialogFooter>

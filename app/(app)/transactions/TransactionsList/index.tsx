@@ -6,6 +6,7 @@ import { Trash2, Loader2 } from "lucide-react";
 import EditTransactionModal from "../EditTransactionModal";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { getCategoryLabel, getCategoryColor } from "@/lib/categories";
 
 type Transactions = {
   id: string;
@@ -18,27 +19,6 @@ type Transactions = {
   updatedAt: string;
 };
 
-const categoryColors: Record<string, string> = {
-  food: "bg-orange-100 text-orange-800",
-  transport: "bg-blue-100 text-blue-800",
-  utilities: "bg-yellow-100 text-yellow-800",
-  entertainment: "bg-purple-100 text-purple-800",
-  healthcare: "bg-red-100 text-red-800",
-  shopping: "bg-green-100 text-green-800",
-  other: "bg-gray-100 text-gray-800",
-};
-
-const categoryLabels: Record<string, string> = {
-  food: "Food & Dining",
-  transport: "Transportation",
-  utilities: "Utilities",
-  entertainment: "Entertainment",
-  healthcare: "Healthcare",
-  shopping: "Shopping",
-  other: "Other",
-};
-
-// IDEA: Change this to a server component and fetch the transactions from here
 export function TransactionsList() {
   const [transactions, setTransactions] = useState<Transactions[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -176,13 +156,10 @@ export function TransactionsList() {
                     {transaction.description}
                   </h3>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      categoryColors[transaction.category] ||
-                      categoryColors.other
-                    }`}
+                    className={`px-2 py-1 rounded-full text-xs font-medium 
+                        ${getCategoryColor(transaction.category)}`}
                   >
-                    {categoryLabels[transaction.category] ||
-                      transaction.category}
+                    {getCategoryLabel(transaction.category)}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">
