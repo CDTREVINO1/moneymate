@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { transactionSchema } from "@/lib/transaction-schema";
 import { format } from "date-fns";
 import { CalendarIcon, Edit } from "lucide-react";
 import { toast } from "sonner";
+import { useTransactions } from "@/context/TransactionContext";
+import { z } from "zod";
+
 import CategorySelect from "@/components/ui/category-select";
-
-import { transactionSchema } from "@/lib/transaction-schema";
-
 import {
   Dialog,
   DialogClose,
@@ -53,6 +53,8 @@ export default function EditTransactionModal({
   category,
 }: EditTransactionModalProps) {
   const [open, setOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+  const { updateTransaction } = useTransactions();
 
   const form = useForm<TransactionData>({
     resolver: zodResolver(transactionSchema),
@@ -85,6 +87,8 @@ export default function EditTransactionModal({
 
       toast.success("Transaction updated successfully!");
 
+      updateTransaction(result);
+
       if (!response.ok) {
         throw new Error(result.error || "Failed to update transaction");
       }
@@ -95,6 +99,8 @@ export default function EditTransactionModal({
         description: errorMessage,
       });
       console.log(error);
+    } finally {
+        setIsLoading(false)
     }
 
     setOpen(false);
@@ -225,9 +231,9 @@ export default function EditTransactionModal({
             <Button
               form="form-edit-transaction"
               type="submit"
-              disabled={!form.formState.isDirty}
+              disabled={!form.formState.isDirty || isLoading}
             >
-              Save changes
+              {isLoading ? "Saving changes...": "Save Changes"}
             </Button>
           </Field>
         </DialogFooter>

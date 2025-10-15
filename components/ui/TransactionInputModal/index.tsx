@@ -1,24 +1,28 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { transactionSchema } from "@/lib/transaction-schema";
+import { format } from "date-fns";
+import { CalendarIcon, SquarePlus } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
+import { useTransactions } from "@/context/TransactionContext";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Field,
   FieldError,
@@ -35,7 +39,11 @@ import CategorySelect from "@/components/ui/category-select";
 
 type TransactionData = z.infer<typeof transactionSchema>;
 
-export const TransactionInputForm: React.FC = () => {
+export const TransactionInputModal: React.FC = () => {
+    const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { addTransaction } = useTransactions();
+
   const form = useForm<TransactionData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -46,7 +54,8 @@ export const TransactionInputForm: React.FC = () => {
   });
 
   async function onSubmit(data: TransactionData) {
-    console.log(data);
+    setIsLoading(true)
+
     const { amount, category, description, date } = data;
 
     try {
@@ -64,11 +73,12 @@ export const TransactionInputForm: React.FC = () => {
         }),
       });
 
-      const data = await response.json();
+      const result = await response.json();
       toast.success("Transaction saved successfully!");
+      addTransaction(result)
       form.reset();
       if (!response.ok) {
-        toast.error(data.error || "Failed to create transaction");
+        toast.error(result.error || "Failed to create transaction");
       }
     } catch (error) {
       const errorMessage =
@@ -77,17 +87,34 @@ export const TransactionInputForm: React.FC = () => {
         description: errorMessage,
       });
       console.log(error);
+    } finally {
+        setIsLoading(false)
     }
+
+    setOpen(false);
+    form.reset();
   }
 
   return (
-    <Card className="w-full sm:max-w-md">
-      <CardHeader>
-        <CardTitle>Transaction Form</CardTitle>
-        <CardDescription>Enter a transaction</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form id="form-transaction" onSubmit={form.handleSubmit(onSubmit)}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant="ghost"
+          className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors border"
+        >
+          <SquarePlus className="h-5 w-5" />
+          TRANSACTION
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add transaction</DialogTitle>
+          <DialogDescription>
+            Add A New Transaction
+          </DialogDescription>
+        </DialogHeader>
+
+        <form id="form-add-transaction" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="description"
@@ -184,17 +211,22 @@ export const TransactionInputForm: React.FC = () => {
             <CategorySelect control={form.control} />
           </FieldGroup>
         </form>
-      </CardContent>
-      <CardFooter>
-        <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
-          </Button>
-          <Button type="submit" form="form-transaction">
-            Submit
-          </Button>
-        </Field>
-      </CardFooter>
-    </Card>
+
+        <DialogFooter>
+          <Field orientation="horizontal">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              form="form-add-transaction"
+              type="submit"
+              disabled={!form.formState.isDirty || isLoading}
+            >
+              {isLoading ? "Saving changes..." : "Save Changes"}
+            </Button>
+          </Field>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };

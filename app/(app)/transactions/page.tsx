@@ -5,8 +5,8 @@ import React, { Fragment } from "react";
 
 import config from "@/payload.config";
 import { HydrateClientUser } from "../_components/HydrateClientUser";
-import { TransactionInputForm } from "./TransactionInputForm";
-import { TransactionsList } from "./TransactionsList";
+import { TransactionPageWrapper } from "@/components/ui/TransactionPageWrapper";
+import { getTransactionsByUserId } from "@/lib/transactions";
 
 export default async function TransactionsPage() {
   const headers = await getHeaders();
@@ -19,14 +19,13 @@ export default async function TransactionsPage() {
     );
   }
 
+  const initialTransactions = await getTransactionsByUserId(user.id);
+
   return (
     <Fragment>
       <HydrateClientUser permissions={permissions} user={user} />
-      <div>Transactions Page</div>
 
-      <TransactionInputForm />
-
-      <TransactionsList />
+      <TransactionPageWrapper initialTransactions={initialTransactions} />
     </Fragment>
   );
 }
