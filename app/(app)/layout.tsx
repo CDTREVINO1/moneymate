@@ -4,6 +4,9 @@ import "./globals.css";
 import { draftMode } from "next/headers";
 import { Footer } from "@/Footer/Component";
 import { Header } from "@/Header/Component";
+import { headers as getHeaders } from "next/headers.js";
+import { getPayload } from "payload";
+import config from "@/payload.config";
 
 import { AdminBar } from "@/components/AdminBar";
 import { ThemeProvider } from "next-themes";
@@ -11,6 +14,7 @@ import { getServerSideURL } from "@/utilities/getURL";
 import { mergeOpenGraph } from "@/utilities/mergeOpenGraph";
 import { AuthProvider } from "./_providers/Auth";
 import { Toaster } from "sonner";
+import { NavMenu } from "@/components/ui/nav-menu";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +33,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headers = await getHeaders();
+  const payload = await getPayload({ config });
+  const { user } = await payload.auth({ headers });
   const { isEnabled } = await draftMode();
 
   return (
@@ -54,6 +61,7 @@ export default async function RootLayout({
             />
 
             <Header />
+            {user && <NavMenu />}
             {children}
             <Toaster position="top-right" richColors />
             <Footer />
