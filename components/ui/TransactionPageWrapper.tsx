@@ -1,7 +1,7 @@
 "use client";
 
 import { Transaction, TransactionProvider } from "@/context/TransactionContext";
-import { TransactionInputModal } from "./TransactionInputModal";
+import { TransactionFormModal } from "./TransactionFormModal";
 import { TransactionsList } from "./TransactionsList";
 
 interface TransactionPageWrapperProps {
@@ -10,8 +10,8 @@ interface TransactionPageWrapperProps {
 
 function TransactionPageContent() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <TransactionInputModal />
+    <div className="min-h-screen py-8">
+      <TransactionFormModal />
       <div className="mt-8">
         <TransactionsList />
       </div>

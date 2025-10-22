@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema } from "@/lib/transaction-schema";
 import { format } from "date-fns";
-import { CalendarIcon, SquarePlus } from "lucide-react";
+import { CalendarIcon, SquarePlus, DollarSign } from "lucide-react";
 import { toast } from "sonner";
-import { z } from "zod";
-import { useTransactions } from "@/context/TransactionContext";
+import { budgetSchema, BudgetFormData } from "@/lib/budget-schema";
+import { useBudgets } from "@/context/BudgetContext";
+import CategorySelect from "../category-select";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -35,60 +35,64 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import CategorySelect from "@/components/ui/category-select";
 
-type TransactionData = z.infer<typeof transactionSchema>;
-
-export const TransactionInputModal: React.FC = () => {
-    const [open, setOpen] = useState(false);
+export const BudgetFormModal: React.FC = () => {
+  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { addTransaction } = useTransactions();
+  const { addBudget } = useBudgets();
 
-  const form = useForm<TransactionData>({
-    resolver: zodResolver(transactionSchema),
+  const form = useForm<BudgetFormData>({
+    resolver: zodResolver(budgetSchema),
     defaultValues: {
-      description: "",
-      amount: 0,
+      name: "",
       category: "",
+      amount: 0,
+      period: "monthly",
+      startDate: format(new Date(), "yyyy-MM-dd"),
     },
+    mode: "onBlur",
   });
 
-  async function onSubmit(data: TransactionData) {
-    setIsLoading(true)
+  async function onSubmit(data: BudgetFormData) {
+    setIsLoading(true);
 
-    const { amount, category, description, date } = data;
+    console.log(data);
 
     try {
-      const response = await fetch("/api/transactions", {
+      const response = await fetch("/api/budgets", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify({
-          description: description,
-          amount: amount,
-          date: date,
-          category: category,
+          name: data.name,
+          category: data.category,
+          amount: data.amount,
+          period: data.period,
+          startDate: data.startDate,
         }),
       });
 
       const result = await response.json();
-      toast.success("Transaction saved successfully!");
-      addTransaction(result)
+
+      toast.success("Budget created successfully!");
+
+      addBudget(result);
+
       form.reset();
+
       if (!response.ok) {
-        toast.error(result.error || "Failed to create transaction");
+        throw new Error(result.error || "Failed to create budget");
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to create transaction", {
+      toast.error("Failed to create budget", {
         description: errorMessage,
       });
-      console.log(error);
     } finally {
-        setIsLoading(false)
+      setIsLoading(false);
     }
 
     setOpen(false);
@@ -98,37 +102,30 @@ export const TransactionInputModal: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors border"
-        >
+        <Button variant="ghost">
           <SquarePlus className="h-5 w-5" />
-          TRANSACTION
+          Add a budget
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add transaction</DialogTitle>
-          <DialogDescription>
-            Add A New Transaction
-          </DialogDescription>
+          <DialogTitle>Add budget</DialogTitle>
+          <DialogDescription>Add A New Budget</DialogDescription>
         </DialogHeader>
 
-        <form id="form-add-transaction" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="form-add-budget" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
-              name="description"
+              name="name"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-transaction-description">
-                    Description
-                  </FieldLabel>
+                  <FieldLabel htmlFor="form-add-budget-name">Name</FieldLabel>
                   <Input
                     {...field}
-                    id="form-transaction-description"
+                    id="form-add-budget-name"
                     aria-invalid={fieldState.invalid}
-                    placeholder="e.g. Gas"
+                    placeholder="e.g. Monthly Food Budget"
                     autoComplete="off"
                   />
                   {fieldState.invalid && (
@@ -137,14 +134,70 @@ export const TransactionInputModal: React.FC = () => {
                 </Field>
               )}
             />
+
+            <CategorySelect control={form.control} />
+
             <Controller
-              name="date"
+              name="amount"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-date">
-                    Date
+                  <FieldLabel htmlFor="form-add-budget-amount">
+                    Amount
                   </FieldLabel>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <Input
+                      {...field}
+                      type="number"
+                      step="0.01"
+                      id="form-add-budget-amount"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="500.00"
+                      className="pl-10"
+                    />
+                  </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="period"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-add-budget-period">
+                    Budget Period
+                  </FieldLabel>
+                  <select
+                    {...field}
+                    id="form-add-budget-period"
+                    aria-invalid={fieldState.invalid}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                  </select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="startDate"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-add-budget-startDate">
+                    Start Date
+                  </FieldLabel>
+
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -174,42 +227,19 @@ export const TransactionInputModal: React.FC = () => {
                       />
                     </PopoverContent>
                   </Popover>
+
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
               )}
             />
-            <Controller
-              name="amount"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-amount">
-                    Amount
-                  </FieldLabel>
-                  <div className="relative">
-                    <span className="absolute left-3 top-2 text-gray-500">
-                      $
-                    </span>
-                    <Input
-                      {...field}
-                      type="number"
-                      step="0.01"
-                      id="amount"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="0.00"
-                      className="pl-8"
-                    />
-                  </div>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <CategorySelect control={form.control} />
           </FieldGroup>
+
+          <p className="text-sm text-gray-600">
+            The end date will be automatically calculated based on the selected
+            period.
+          </p>
         </form>
 
         <DialogFooter>
@@ -218,7 +248,7 @@ export const TransactionInputModal: React.FC = () => {
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button
-              form="form-add-transaction"
+              form="form-add-budget"
               type="submit"
               disabled={!form.formState.isDirty || isLoading}
             >

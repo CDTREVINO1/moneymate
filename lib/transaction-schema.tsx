@@ -17,3 +17,5 @@ export const transactionSchema = z.object({
     error: () => ({ message: "Please select a valid category" }),
   }),
 });
+
+export type TransactionData = z.infer<typeof transactionSchema>;

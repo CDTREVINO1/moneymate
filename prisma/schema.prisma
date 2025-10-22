@@ -509,6 +509,7 @@ model users {
     salt          String
     sessions      UsersSessions[]
     transactions  Transaction[]
+    budgets       Budget[]
     updatedAt     DateTime        @db.Date
 
     @@index([createdAt], map: "createdAt_1")
@@ -525,4 +526,22 @@ model Transaction {
     author      users    @relation(fields: [authorId], references: [id], onDelete: Cascade)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
+}
+
+model Budget {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  category    String   // Links to transaction categories
+  amount      Float    // Budget limit
+  period      String   // "monthly", "weekly", "yearly"
+  startDate   DateTime
+  endDate     DateTime?
+  userId      String   @db.ObjectId
+  user        users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([category])
+  @@index([startDate])
 }

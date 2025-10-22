@@ -1,13 +1,17 @@
+"use client";
+
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { transactionSchema, TransactionData } from "@/lib/transaction-schema";
 import { format } from "date-fns";
-import { CalendarIcon, Edit, DollarSign } from "lucide-react";
+import { CalendarIcon, SquarePlus, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { useTransactions } from "@/context/TransactionContext";
-import CategorySelect from "@/components/ui/category-select";
 
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogClose,
@@ -29,70 +33,54 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import CategorySelect from "@/components/ui/category-select";
 
-type EditTransactionModalProps = {
-  transactionId: string;
-  description: string;
-  date: string;
-  amount: number;
-  category: string;
-};
-
-export default function EditTransactionModal({
-  transactionId,
-  description,
-  date,
-  amount,
-  category,
-}: EditTransactionModalProps) {
+export const TransactionFormModal: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { updateTransaction } = useTransactions();
+  const { addTransaction } = useTransactions();
 
   const form = useForm<TransactionData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
-      description: description,
-      amount: amount,
-      category: category,
-      date: new Date(format(date, "yyyy-MM-dd")),
+      description: "",
+      amount: 0,
+      category: "",
     },
   });
 
   async function onSubmit(data: TransactionData) {
+    setIsLoading(true);
+
+    const { amount, category, description, date } = data;
+
     try {
       const response = await fetch("/api/transactions", {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify({
-          transactionId: transactionId,
-          description: data.description,
-          amount: data.amount,
-          date: data.date,
-          category: data.category,
+          description: description,
+          amount: amount,
+          date: date,
+          category: category,
         }),
       });
 
       const result = await response.json();
-
-      toast.success("Transaction updated successfully!");
-
-      updateTransaction(result);
-
+      toast.success("Transaction saved successfully!");
+      addTransaction(result);
+      form.reset();
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update transaction");
+        toast.error(result.error || "Failed to create transaction");
       }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to update transaction", {
+      toast.error("Failed to create transaction", {
         description: errorMessage,
       });
       console.log(error);
@@ -108,33 +96,31 @@ export default function EditTransactionModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <Edit className="h-5 w-5" />
+          <SquarePlus className="h-5 w-5" />
+          TRANSACTION
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit transaction</DialogTitle>
-          <DialogDescription>
-            Make changes to your transaction here. Click save when you&apos;re
-            done.
-          </DialogDescription>
+          <DialogTitle>Add transaction</DialogTitle>
+          <DialogDescription>Add A New Transaction</DialogDescription>
         </DialogHeader>
 
-        <form id="form-edit-transaction" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="form-add-transaction" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
               name="description"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-description">
+                  <FieldLabel htmlFor="form-transaction-description">
                     Description
                   </FieldLabel>
                   <Input
                     {...field}
-                    id={field.name}
+                    id="form-transaction-description"
                     aria-invalid={fieldState.invalid}
-                    placeholder="Transaction description"
+                    placeholder="e.g. Gas"
                     autoComplete="off"
                   />
                   {fieldState.invalid && (
@@ -149,9 +135,10 @@ export default function EditTransactionModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-date">
+                  <FieldLabel htmlFor="form-add-transaction-date">
                     Date
                   </FieldLabel>
+
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -193,7 +180,7 @@ export default function EditTransactionModal({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-amount">
+                  <FieldLabel htmlFor="form-add-transaction-amount">
                     Amount
                   </FieldLabel>
                   <div className="relative">
@@ -214,17 +201,17 @@ export default function EditTransactionModal({
                 </Field>
               )}
             />
-
             <CategorySelect control={form.control} />
           </FieldGroup>
         </form>
+
         <DialogFooter>
           <Field orientation="horizontal">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button
-              form="form-edit-transaction"
+              form="form-add-transaction"
               type="submit"
               disabled={!form.formState.isDirty || isLoading}
             >
@@ -235,4 +222,4 @@ export default function EditTransactionModal({
       </DialogContent>
     </Dialog>
   );
-}
+};

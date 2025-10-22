@@ -1,12 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema, TransactionData } from "@/lib/transaction-schema";
+import { budgetSchema, BudgetFormData } from "@/lib/budget-schema";
 import { format } from "date-fns";
 import { CalendarIcon, Edit, DollarSign } from "lucide-react";
 import { toast } from "sonner";
-import { useTransactions } from "@/context/TransactionContext";
-import CategorySelect from "@/components/ui/category-select";
+import { useBudgets, Budget } from "@/context/BudgetContext";
+import CategorySelect from "../category-select";
 
 import {
   Dialog,
@@ -34,68 +34,63 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-type EditTransactionModalProps = {
-  transactionId: string;
-  description: string;
-  date: string;
-  amount: number;
-  category: string;
-};
+type EditBudgetModalProps = {
+  budget: Budget | null;
+}
 
-export default function EditTransactionModal({
-  transactionId,
-  description,
-  date,
-  amount,
-  category,
-}: EditTransactionModalProps) {
+export default function EditBudgetModal({
+  budget,
+}: EditBudgetModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { updateTransaction } = useTransactions();
+  const { updateBudget } = useBudgets();
 
-  const form = useForm<TransactionData>({
-    resolver: zodResolver(transactionSchema),
+  const form = useForm<BudgetFormData>({
+    resolver: zodResolver(budgetSchema),
     defaultValues: {
-      description: description,
-      amount: amount,
-      category: category,
-      date: new Date(format(date, "yyyy-MM-dd")),
+      name: budget?.name || "",
+      category: budget?.category || "other",
+      amount: budget?.amount || 0,
+      period: budget?.period || "monthly",
+      startDate: new Date(budget.startDate) || format(new Date(), "yyyy-MM-dd"),
     },
+    mode: "onBlur",
   });
 
-  async function onSubmit(data: TransactionData) {
+  async function onSubmit(data: BudgetFormData) {
+    if (!budget) return;
+
+    setIsLoading(true);
+
     try {
-      const response = await fetch("/api/transactions", {
+      const response = await fetch(`/api/budgets/${budget.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify({
-          transactionId: transactionId,
-          description: data.description,
-          amount: data.amount,
-          date: data.date,
+          name: data.name,
           category: data.category,
+          amount: data.amount,
+          period: data.period,
+          startDate: data.startDate,
         }),
       });
 
       const result = await response.json();
 
-      toast.success("Transaction updated successfully!");
-
-      updateTransaction(result);
-
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update transaction");
+        throw new Error(result.error || "Failed to update budget");
       }
-    } catch (error) {
+
+      toast.success("Budget updated successfully!");
+
+      updateBudget(result);
+    } catch (err) {
       const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to update transaction", {
-        description: errorMessage,
-      });
-      console.log(error);
+        err instanceof Error ? err.message : "An error occurred";
+      toast.error("Failed to update budget", { description: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -113,28 +108,26 @@ export default function EditTransactionModal({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit transaction</DialogTitle>
+          <DialogTitle>Edit budget</DialogTitle>
           <DialogDescription>
-            Make changes to your transaction here. Click save when you&apos;re
-            done.
+            Make changes to your budget here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
 
-        <form id="form-edit-transaction" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="form-edit-budget" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
+
             <Controller
-              name="description"
+              name="name"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-description">
-                    Description
-                  </FieldLabel>
+                  <FieldLabel htmlFor="form-edit-budget-name">Name</FieldLabel>
                   <Input
                     {...field}
                     id={field.name}
                     aria-invalid={fieldState.invalid}
-                    placeholder="Transaction description"
+                    placeholder="Transaction name"
                     autoComplete="off"
                   />
                   {fieldState.invalid && (
@@ -144,13 +137,67 @@ export default function EditTransactionModal({
               )}
             />
 
+            <CategorySelect control={form.control} />
+
             <Controller
-              name="date"
+              name="amount"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-date">
-                    Date
+                  <FieldLabel htmlFor="form-edit-budget-amount">
+                    Amount
+                  </FieldLabel>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <Input
+                      {...field}
+                      type="number"
+                      step="0.01"
+                      id="amount"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="0.00"
+                      className="pl-8"
+                    />
+                  </div>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="period"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-edit-budget-period">
+                    Budget Period
+                  </FieldLabel>
+                  <select
+                    {...field}
+                    id="edit-period"
+                    aria-invalid={fieldState.invalid}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                  </select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="startDate"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-edit-budget-date">
+                    Start Date
                   </FieldLabel>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -187,44 +234,16 @@ export default function EditTransactionModal({
                 </Field>
               )}
             />
-
-            <Controller
-              name="amount"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-edit-transaction-amount">
-                    Amount
-                  </FieldLabel>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                    <Input
-                      {...field}
-                      type="number"
-                      step="0.01"
-                      id="amount"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="0.00"
-                      className="pl-8"
-                    />
-                  </div>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <CategorySelect control={form.control} />
           </FieldGroup>
         </form>
+
         <DialogFooter>
           <Field orientation="horizontal">
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button
-              form="form-edit-transaction"
+              form="form-edit-budget"
               type="submit"
               disabled={!form.formState.isDirty || isLoading}
             >
