@@ -107,7 +107,7 @@ export default function EditTransactionModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
+        <Button onClick={() => form.reset()} variant="ghost">
           <Edit className="h-5 w-5" />
         </Button>
       </DialogTrigger>

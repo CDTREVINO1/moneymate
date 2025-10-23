@@ -56,8 +56,6 @@ export const BudgetFormModal: React.FC = () => {
   async function onSubmit(data: BudgetFormData) {
     setIsLoading(true);
 
-    console.log(data);
-
     try {
       const response = await fetch("/api/budgets", {
         method: "POST",
@@ -102,7 +100,7 @@ export const BudgetFormModal: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
+        <Button onClick={() => form.reset()} variant="ghost">
           <SquarePlus className="h-5 w-5" />
           Add a budget
         </Button>

@@ -95,7 +95,7 @@ export const TransactionFormModal: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
+        <Button onClick={() => form.reset()} variant="ghost">
           <SquarePlus className="h-5 w-5" />
           TRANSACTION
         </Button>

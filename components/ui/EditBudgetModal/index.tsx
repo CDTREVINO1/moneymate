@@ -102,7 +102,7 @@ export default function EditBudgetModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
+        <Button onClick={() => form.reset()} variant="ghost">
           <Edit className="h-5 w-5" />
         </Button>
       </DialogTrigger>
@@ -116,7 +116,6 @@ export default function EditBudgetModal({
 
         <form id="form-edit-budget" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
-
             <Controller
               name="name"
               control={form.control}

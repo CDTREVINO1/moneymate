@@ -20,8 +20,6 @@ export default async function BudgetsPage() {
     getTransactionsByUserId(user.id),
   ]);
 
-  console.log("Server: Fetched budgets:", initialBudgets.length);
-
   return (
     <BudgetPageWrapper
       initialBudgets={initialBudgets}
