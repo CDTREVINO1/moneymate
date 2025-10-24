@@ -45,7 +45,7 @@ export default async function RootLayout({
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body
-        className={`${oxaniumSans.variable} ${sourceMono.variable} antialiased font-sans`}
+        className={`h-screen ${oxaniumSans.variable} ${sourceMono.variable} antialiased font-sans`}
       >
         <AuthProvider api="rest">
           <ThemeProvider
