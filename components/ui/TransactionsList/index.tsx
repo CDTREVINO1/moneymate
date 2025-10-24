@@ -6,6 +6,7 @@ import EditTransactionModal from "../EditTransactionModal";
 import { Button } from "@/components/ui/button";
 import { getCategoryLabel, getCategoryColor } from "@/lib/categories";
 import { useTransactions } from "@/context/TransactionContext";
+import { TransactionFormModal } from "../TransactionFormModal";
 
 export function TransactionsList() {
   const { state, deleteTransaction } = useTransactions();
@@ -48,6 +49,7 @@ if (state.transactions.length === 0) {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <TransactionFormModal />
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Your Transactions</h2>
         <div className="text-right">
