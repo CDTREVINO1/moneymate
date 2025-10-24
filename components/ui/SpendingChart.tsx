@@ -94,12 +94,10 @@ export default function SpendingChart({
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
-          <p className="font-semibold text-gray-900">{data.name}</p>
-          <p className="text-sm text-gray-600">${data.value.toFixed(2)}</p>
-          <p className="text-xs text-gray-500">
-            {data.percentage.toFixed(1)}% of total
-          </p>
+        <div className="p-3 rounded-lg shadow-lg border border-gray-200">
+          <p className="font-semibold">{data.name}</p>
+          <p className="text-sm">${data.value.toFixed(2)}</p>
+          <p className="text-xs">{data.percentage.toFixed(1)}% of total</p>
         </div>
       );
     }
@@ -108,10 +106,10 @@ export default function SpendingChart({
 
   if (chartData.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="rounded-lg shadow p-6">
         <h2 className="text-xl font-bold mb-4">{title}</h2>
-        <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-          <TrendingUp className="h-12 w-12 mb-3 text-gray-400" />
+        <div className="flex flex-col items-center justify-center py-12">
+          <TrendingUp className="h-12 w-12 mb-3" />
           <p>No spending data available</p>
           <p className="text-sm mt-1">
             Add some transactions to see your spending breakdown
@@ -122,15 +120,13 @@ export default function SpendingChart({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="rounded-lg shadow p-12">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">{title}</h2>
         {showTotal && (
           <div className="text-right">
-            <p className="text-sm text-gray-600">Total Spent</p>
-            <p className="text-2xl font-bold text-gray-900">
-              ${totalSpending.toFixed(2)}
-            </p>
+            <p className="text-sm">Total Spent</p>
+            <p className="text-2xl font-bold">${totalSpending.toFixed(2)}</p>
           </div>
         )}
       </div>
@@ -180,22 +176,20 @@ export default function SpendingChart({
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
-              <span className="text-sm font-medium text-gray-700">
-                {item.name}
-              </span>
+              <span className="text-sm font-medium">{item.name}</span>
             </div>
             <div className="text-right">
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-sm font-semibold">
                 ${item.value.toFixed(2)}
               </span>
-              <span className="text-xs text-gray-500 ml-2">
+              <span className="text-xs ml-2">
                 ({item.percentage.toFixed(1)}%)
               </span>
             </div>
           </div>
         ))}
         {chartData.length > 5 && (
-          <p className="text-xs text-gray-500 text-center pt-2">
+          <p className="text-xs text-center pt-2">
             +{chartData.length - 5} more{" "}
             {chartData.length - 5 === 1 ? "category" : "categories"}
           </p>

@@ -3,21 +3,17 @@
 import { Budget, BudgetProvider } from "@/context/BudgetContext";
 import { Transaction, TransactionProvider } from "@/context/TransactionContext";
 
-import { BudgetFormModal } from "@/components/ui/BudgetFormModal";
 import BudgetList from "./BudgetList";
 
 interface BudgetPageWrapperProps {
   initialBudgets: Budget[];
-  initialTransactions: Transaction[]
+  initialTransactions: Transaction[];
 }
 
 function BudgetPageContent() {
   return (
-    <div className="min-h-screen py-8">
-      <BudgetFormModal />
-      <div className="mt-8">
-        <BudgetList />
-      </div>
+    <div className="min-h-screen">
+      <BudgetList />
     </div>
   );
 }
