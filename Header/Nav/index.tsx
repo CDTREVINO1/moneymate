@@ -16,42 +16,41 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const { user, permissions } = useAuth<User>();
   const navItems = data?.navItems || [];
 
-  return (
-    <nav className="flex items-center gap-3">
-      {navItems.map(({ link }, i) => {
-        return <CMSLink key={i} {...link} appearance="link" />;
-      })}
+    return (
+      <nav className="flex items-center gap-3">
+        {navItems.map(({ link }, i) => {
+          return <CMSLink key={i} {...link} appearance="link" />;
+        })}
 
-      {user && permissions?.canAccessAdmin && (
-        <Fragment>
+        {!user ? (
           <Button asChild>
-            <Link href="/admin">Admin</Link>
+            <Link href="/login">Login</Link>
           </Button>
-        </Fragment>
-      )}
+        ) : (
+          <Fragment>
+            <Button variant="outline" asChild>
+              <Link href="/account">{user.email}</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/logout">Logout</Link>
+            </Button>
+          </Fragment>
+        )}
+        {user && permissions?.canAccessAdmin && (
+          <Fragment>
+            <Button asChild>
+              <Link href="/admin">Admin</Link>
+            </Button>
+          </Fragment>
+        )}
 
-      {!user ? (
-        <Button asChild>
-          <Link href="/login">Login</Link>
+        <ThemeToggle />
+        <Button variant="ghost" asChild>
+          <Link href="/search">
+            <span className="sr-only">Search</span>
+            <SearchIcon className="w-5 text-primary" />
+          </Link>
         </Button>
-      ) : (
-        <Fragment>
-          <Button variant="outline" asChild>
-            <Link href="/account">Account</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/logout">Logout</Link>
-          </Button>
-        </Fragment>
-      )}
-
-      <ThemeToggle />
-      <Button variant="ghost" asChild>
-        <Link href="/search">
-          <span className="sr-only">Search</span>
-          <SearchIcon className="w-5 text-primary" />
-        </Link>
-      </Button>
-    </nav>
-  );
+      </nav>
+    );
 };
