@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getPayload } from "payload";
 import React, { Fragment } from "react";
 
-import config from "../../../payload.config";
+import config from "@/payload.config";
 import { LogoutPage } from "./LogoutPage";
 
 export default async function Logout() {
@@ -13,21 +13,37 @@ export default async function Logout() {
 
   if (!user) {
     return (
-      <Fragment>
-        <h1>You are already logged out.</h1>
-        <p>
-          {"What would you like to do next? "}
-          <Link href="/">Click here</Link>
-          {` to go to the home page. To log back in, `}
-          <Link href="/login">click here</Link>.
-        </p>
-      </Fragment>
+      <div className="min-h-screen">
+        <div className="flex justify-center p-6">
+          <div>
+            <h1 className="text-primary text-2xl font-bold">
+              You are already logged out.
+            </h1>
+            <p>
+              {" What would you like to do next? "}
+              <br />
+              <Link className="underline hover:text-primary" href="/">
+                Click here
+              </Link>
+              {` to go to the home page. To log back in, `}
+              <Link className="underline hover:text-primary" href="/login">
+                click here
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
     <Fragment>
-      <LogoutPage />
+      <div className="min-h-screen">
+        <div className="flex justify-center p-6">
+          <LogoutPage />
+        </div>
+      </div>
     </Fragment>
   );
 }

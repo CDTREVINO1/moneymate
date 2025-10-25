@@ -1,11 +1,8 @@
 import { headers as getHeaders } from "next/headers.js";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getPayload } from "payload";
-import React, { Fragment } from "react";
 
 import config from "@/payload.config";
-import { Button } from "@/components/ui/button";
 import { HydrateClientUser } from "../_components/HydrateClientUser";
 import { AccountForm } from "./AccountForm";
 

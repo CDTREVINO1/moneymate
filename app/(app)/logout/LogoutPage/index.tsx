@@ -27,15 +27,23 @@ export const LogoutPage: React.FC = () => {
     <Fragment>
       {(error || success) && (
         <div>
-          <h1>{error || success}</h1>
+          <h1 className="text-primary text-2xl font-bold">
+            {error || success}
+          </h1>
           <p>
-            {'What would you like to do next? '}
-            <Link href="/">Click here</Link>
+            {"What would you like to do next? "}
+            <br />
+            <Link className="underline hover:text-primary" href="/">
+              Click here
+            </Link>
             {` to go to the home page. To log back in, `}
-            <Link href="/login">click here</Link>.
+            <Link className="underline hover:text-primary" href="/login">
+              click here
+            </Link>
+            .
           </p>
         </div>
       )}
     </Fragment>
-  )
+  );
 }
