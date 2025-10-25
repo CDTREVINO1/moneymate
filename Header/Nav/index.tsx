@@ -13,7 +13,7 @@ import { useAuth } from "@/app/(app)/_providers/Auth";
 import type { User } from "@/payload-types.ts";
 
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
-  const { user } = useAuth<User>();
+  const { user, permissions } = useAuth<User>();
   const navItems = data?.navItems || [];
 
   return (
@@ -21,6 +21,14 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
       {navItems.map(({ link }, i) => {
         return <CMSLink key={i} {...link} appearance="link" />;
       })}
+
+      {user && permissions?.canAccessAdmin && (
+        <Fragment>
+          <Button asChild>
+            <Link href="/admin">Admin</Link>
+          </Button>
+        </Fragment>
+      )}
 
       {!user ? (
         <Button asChild>
