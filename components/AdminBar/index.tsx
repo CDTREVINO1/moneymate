@@ -10,6 +10,8 @@ import { useSelectedLayoutSegments } from "next/navigation";
 import { PayloadAdminBar } from "@payloadcms/admin-bar";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/(app)/_providers/Auth";
+import type { User } from "@/payload-types.ts";
 
 import "./index.scss";
 
@@ -37,6 +39,7 @@ const Title: React.FC = () => <span>Dashboard</span>;
 export const AdminBar: React.FC<{
   adminBarProps?: PayloadAdminBarProps;
 }> = (props) => {
+  const { user } = useAuth<User>();
   const { adminBarProps } = props || {};
   const segments = useSelectedLayoutSegments();
   const [show, setShow] = useState(false);
@@ -50,6 +53,8 @@ export const AdminBar: React.FC<{
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
     setShow(Boolean(user?.id));
   }, []);
+
+  if (!user) return;
 
   return (
     <div

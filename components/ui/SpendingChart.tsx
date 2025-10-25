@@ -1,4 +1,4 @@
-// components/SpendingChart.tsx
+
 "use client";
 
 import { useMemo } from "react";
@@ -13,7 +13,6 @@ import {
 import { Transaction } from "@/context/TransactionContext";
 import { getCategoryLabel } from "@/lib/categories";
 import { TrendingUp } from "lucide-react";
-
 
 interface SpendingChartProps {
   transactions: Transaction[];
