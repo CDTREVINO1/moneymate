@@ -97,7 +97,7 @@ export const TransactionFormModal: React.FC = () => {
       <DialogTrigger asChild>
         <Button onClick={() => form.reset()} variant="outline">
           <SquarePlus className="h-5 w-5" />
-          TRANSACTION
+          Transaction
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

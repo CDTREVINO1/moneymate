@@ -9,7 +9,7 @@ export default function Home() {
         <h1 className="text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl">
           MoneyMate
         </h1>
-        <p className="text-lg font-normal lg:text-xl sm:px-16 lg:px-48">
+        <p className="text-lg font-normal px-6 lg:text-xl lg:px-48">
           MoneyMate is a personal financial management service designed to help
           users track their expenses, create budgets, and achieve financial
           goals. With MoneyMate, you can easily manage your finances, make

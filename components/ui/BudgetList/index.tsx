@@ -42,11 +42,14 @@ export default function BudgetList() {
 
   if (budgetState.budgets.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-        <p className="text-gray-600 text-lg">No budgets yet.</p>
-        <p className="text-gray-500 mt-2">
-          Create your first budget to start tracking your spending!
-        </p>
+      <div className="max-w-4xl mx-auto p-6">
+        <BudgetFormModal />
+        <div className="text-center py-12 mt-6 rounded-lg border-2 border-dashed border-secondary">
+          <p className="text-lg">No budgets yet.</p>
+          <p className="mt-2">
+            Create your first budget to start tracking your spending!
+          </p>
+        </div>
       </div>
     );
   }

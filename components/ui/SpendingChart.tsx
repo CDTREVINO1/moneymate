@@ -91,7 +91,7 @@ export default function SpendingChart({
 
   if (chartData.length === 0) {
     return (
-      <div className="rounded-lg shadow p-6">
+      <div className="h-full rounded-lg shadow p-6">
         <h2 className="text-xl font-bold mb-4">{title}</h2>
         <div className="flex flex-col items-center justify-center py-12">
           <TrendingUp className="h-12 w-12 mb-3" />
@@ -105,7 +105,7 @@ export default function SpendingChart({
   }
 
   return (
-    <div className="rounded-lg shadow p-12">
+    <div className="rounded-lg shadow px-12 pt-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold">{title}</h2>
         {showTotal && (
@@ -150,7 +150,7 @@ export default function SpendingChart({
       </div>
 
       {/* Category List */}
-      <div className="mt-6 space-y-2">
+      <div className="invisible md:visible mt-6 space-y-2">
         {chartData.slice(0, 5).map((item, index) => (
           <div
             key={item.category}
