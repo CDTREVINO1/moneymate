@@ -1,77 +1,79 @@
-"use client";
+"use client"
 
-import { format } from "date-fns";
+import { useBudgets } from "@/context/BudgetContext"
+import { useTransactions } from "@/context/TransactionContext"
+import { format } from "date-fns"
 import {
-  Trash2,
-  Loader2,
-  TrendingUp,
-  TrendingDown,
   AlertCircle,
-} from "lucide-react";
-import EditBudgetModal from "../EditBudgetModal";
-import { Button } from "@/components/ui/button";
-import { getCategoryLabel, getCategoryColor } from "@/lib/categories";
-import { useBudgets } from "@/context/BudgetContext";
-import { useTransactions } from "@/context/TransactionContext";
+  Loader2,
+  Trash2,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react"
+
 import {
+  formatPeriod,
   getBudgetProgress,
   getProgressColor,
-  formatPeriod,
-} from "@/lib/budget-utils";
-import { BudgetFormModal } from "../BudgetFormModal";
+} from "@/lib/budget-utils"
+import { getCategoryColor, getCategoryLabel } from "@/lib/categories"
+import { Button } from "@/components/ui/button"
+
+import { BudgetFormModal } from "../BudgetFormModal"
+import EditBudgetModal from "../EditBudgetModal"
 
 export default function BudgetList() {
-  const { state: budgetState, deleteBudget } = useBudgets();
-  const { state: transactionState } = useTransactions();
+  const { state: budgetState, deleteBudget } = useBudgets()
+  const { state: transactionState } = useTransactions()
 
   if (budgetState.isLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
+      <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
       </div>
-    );
+    )
   }
 
   if (budgetState.error) {
     return (
-      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
         {budgetState.error}
       </div>
-    );
+    )
   }
 
   if (budgetState.budgets.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="mx-auto max-w-4xl p-6">
         <BudgetFormModal />
-        <div className="text-center py-12 mt-6 rounded-lg border-2 border-dashed border-secondary">
+        <div className="mt-6 rounded-lg border-2 border-dashed border-secondary py-12 text-center">
           <p className="text-lg">No budgets yet.</p>
           <p className="mt-2">
             Create your first budget to start tracking your spending!
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-4">
+    <div className="mx-auto max-w-4xl space-y-4 p-6">
       <BudgetFormModal />
-      <h2 className="text-2xl font-bold mb-4">Your Budgets</h2>
+      <h2 className="mb-4 text-2xl font-bold">Your Budgets</h2>
       {budgetState.budgets.map((budget) => {
         const progress = getBudgetProgress(
           budget,
           transactionState.transactions
-        );
+        )
         const progressColor = getProgressColor(
           progress.percentage,
           progress.isOverBudget
-        );
+        )
 
         return (
           <div
             key={budget.id}
-            className={`bg-card border-2 rounded-lg p-5 hover:shadow-lg transition-shadow ${
+            className={`rounded-lg border-2 bg-card p-5 transition-shadow hover:shadow-lg ${
               progress.status === "danger"
                 ? "border-red-200"
                 : progress.status === "warning"
@@ -79,16 +81,16 @@ export default function BudgetList() {
                   : "border-gray-200"
             }`}
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="mb-4 flex items-start justify-between">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-bold text-lg">{budget.name}</h3>
+                <div className="mb-2 flex items-center gap-2">
+                  <h3 className="text-lg font-bold">{budget.name}</h3>
                   {progress.isOverBudget && (
                     <AlertCircle className="h-5 w-5 text-red-500" />
                   )}
                 </div>
                 <span
-                  className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(budget.category)}`}
+                  className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${getCategoryColor(budget.category)}`}
                 >
                   {getCategoryLabel(budget.category)}
                 </span>
@@ -101,7 +103,7 @@ export default function BudgetList() {
                   variant="ghost"
                   onClick={() => deleteBudget(budget.id)}
                   disabled={budgetState.deletingId === budget.id}
-                  className="p-2 rounded-md transition-colors disabled:opacity-50"
+                  className="rounded-md p-2 transition-colors disabled:opacity-50"
                   title="Delete budget"
                 >
                   {budgetState.deletingId === budget.id ? (
@@ -114,7 +116,7 @@ export default function BudgetList() {
             </div>
 
             <div className="mb-4">
-              <div className="flex items-baseline justify-between mb-1">
+              <div className="mb-1 flex items-baseline justify-between">
                 <span className="text-sm text-gray-600">
                   {formatPeriod(budget.period)} Budget
                 </span>
@@ -123,14 +125,14 @@ export default function BudgetList() {
                 </span>
               </div>
 
-              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200">
                 <div
                   className={`h-full ${progressColor} transition-all duration-300`}
                   style={{ width: `${Math.min(progress.percentage, 100)}%` }}
                 />
               </div>
 
-              <div className="flex items-center justify-between mt-2">
+              <div className="mt-2 flex items-center justify-between">
                 <span
                   className={`text-sm font-semibold ${
                     progress.isOverBudget ? "text-red-600" : "text-gray-700"
@@ -145,10 +147,10 @@ export default function BudgetList() {
             </div>
 
             <div
-              className={`flex items-center gap-2 p-3 rounded-lg ${
+              className={`flex items-center gap-2 rounded-lg p-3 ${
                 progress.isOverBudget
-                  ? "bg-red-50 border border-red-200"
-                  : "bg-green-50 border border-green-200"
+                  ? "border border-red-200 bg-red-50"
+                  : "border border-green-200 bg-green-50"
               }`}
             >
               {progress.isOverBudget ? (
@@ -178,7 +180,7 @@ export default function BudgetList() {
               )}
             </div>
 
-            <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="mt-3 border-t border-gray-200 pt-3">
               <p className="text-xs text-gray-500">
                 {format(new Date(budget.startDate), "MMM d, yyyy")} -{" "}
                 {budget.endDate
@@ -187,8 +189,8 @@ export default function BudgetList() {
               </p>
             </div>
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

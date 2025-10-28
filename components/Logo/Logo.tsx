@@ -25,5 +25,5 @@ export const Logo = (props: Props) => {
       height={100}
       alt="MoneyMate logo"
     />
-  );
+  )
 }

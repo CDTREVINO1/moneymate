@@ -1,18 +1,17 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon, SquarePlus, DollarSign } from "lucide-react";
-import { toast } from "sonner";
-import { budgetSchema, BudgetFormData } from "@/lib/budget-schema";
-import { useBudgets } from "@/context/BudgetContext";
-import CategorySelect from "../category-select";
+import { useState } from "react"
+import { useBudgets } from "@/context/BudgetContext"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
+import { CalendarIcon, DollarSign, SquarePlus } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { BudgetFormData, budgetSchema } from "@/lib/budget-schema"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Dialog,
   DialogClose,
@@ -22,24 +21,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/popover"
+
+import CategorySelect from "../category-select"
 
 export const BudgetFormModal: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { addBudget } = useBudgets();
+  const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { addBudget } = useBudgets()
 
   const form = useForm<BudgetFormData>({
     resolver: zodResolver(budgetSchema),
@@ -51,10 +52,10 @@ export const BudgetFormModal: React.FC = () => {
       startDate: format(new Date(), "yyyy-MM-dd"),
     },
     mode: "onBlur",
-  });
+  })
 
   async function onSubmit(data: BudgetFormData) {
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const response = await fetch("/api/budgets", {
@@ -70,31 +71,31 @@ export const BudgetFormModal: React.FC = () => {
           period: data.period,
           startDate: data.startDate,
         }),
-      });
+      })
 
-      const result = await response.json();
+      const result = await response.json()
 
-      toast.success("Budget created successfully!");
+      toast.success("Budget created successfully!")
 
-      addBudget(result);
+      addBudget(result)
 
-      form.reset();
+      form.reset()
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to create budget");
+        throw new Error(result.error || "Failed to create budget")
       }
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
+        error instanceof Error ? error.message : "An error occurred"
       toast.error("Failed to create budget", {
         description: errorMessage,
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
 
-    setOpen(false);
-    form.reset();
+    setOpen(false)
+    form.reset()
   }
 
   return (
@@ -144,7 +145,7 @@ export const BudgetFormModal: React.FC = () => {
                     Amount
                   </FieldLabel>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <DollarSign className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
                     <Input
                       {...field}
                       type="number"
@@ -174,7 +175,7 @@ export const BudgetFormModal: React.FC = () => {
                     {...field}
                     id="form-add-budget-period"
                     aria-invalid={fieldState.invalid}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   >
                     <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
@@ -256,5 +257,5 @@ export const BudgetFormModal: React.FC = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}

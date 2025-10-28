@@ -1,6 +1,7 @@
 import type React from "react"
 import { notFound, redirect } from "next/navigation"
 import type { Page, Post } from "@/payload-types"
+
 import { getCachedDocument } from "@/utilities/getDocument"
 import { getCachedRedirects } from "@/utilities/getRedirects"
 

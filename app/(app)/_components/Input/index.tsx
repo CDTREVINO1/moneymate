@@ -1,8 +1,7 @@
-import type { FieldValues, UseFormRegister } from 'react-hook-form'
+import React from "react"
+import type { FieldValues, UseFormRegister } from "react-hook-form"
 
-import React from 'react'
-
-import classes from './index.module.scss'
+import classes from "./index.module.scss"
 
 type Props = {
   error: any
@@ -10,13 +9,13 @@ type Props = {
   name: string
   register: UseFormRegister<any & FieldValues> // eslint-disable-line @typescript-eslint/no-redundant-type-constituents
   required?: boolean
-  type?: 'email' | 'number' | 'password' | 'text'
+  type?: "email" | "number" | "password" | "text"
   validate?: (value: string) => boolean | string
 }
 
 export const Input: React.FC<Props> = ({
   name,
-  type = 'text',
+  type = "text",
   error,
   label,
   register,
@@ -26,18 +25,20 @@ export const Input: React.FC<Props> = ({
   return (
     <div className={classes.inputWrap}>
       <label className={classes.label} htmlFor="name">
-        {`${label} ${required ? '*' : ''}`}
+        {`${label} ${required ? "*" : ""}`}
       </label>
       <input
-        className={[classes.input, error && classes.error].filter(Boolean).join(' ')}
+        className={[classes.input, error && classes.error]
+          .filter(Boolean)
+          .join(" ")}
         {...{ type }}
         {...register(name, {
           required,
           validate,
-          ...(type === 'email'
+          ...(type === "email"
             ? {
                 pattern: {
-                  message: 'Please enter a valid email',
+                  message: "Please enter a valid email",
                   value: /\S[^\s@]*@\S+\.\S+/,
                 },
               }
@@ -46,8 +47,8 @@ export const Input: React.FC<Props> = ({
       />
       {error && (
         <div className={classes.errorMessage}>
-          {!error?.message && error?.type === 'required'
-            ? 'This field is required'
+          {!error?.message && error?.type === "required"
+            ? "This field is required"
             : error?.message}
         </div>
       )}

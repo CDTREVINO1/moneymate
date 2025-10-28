@@ -1,22 +1,22 @@
-import { headers as getHeaders } from "next/headers.js";
-import Link from "next/link";
-import { getPayload } from "payload";
-import React, { Fragment } from "react";
+import React, { Fragment } from "react"
+import { headers as getHeaders } from "next/headers.js"
+import Link from "next/link"
+import config from "@/payload.config"
+import { getPayload } from "payload"
 
-import config from "@/payload.config";
-import { LogoutPage } from "./LogoutPage";
+import { LogoutPage } from "./LogoutPage"
 
 export default async function Logout() {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const headers = await getHeaders()
+  const payload = await getPayload({ config })
+  const { user } = await payload.auth({ headers })
 
   if (!user) {
     return (
       <div className="min-h-screen">
         <div className="flex justify-center p-6">
           <div>
-            <h1 className="text-primary text-2xl font-bold">
+            <h1 className="text-2xl font-bold text-primary">
               You are already logged out.
             </h1>
             <p>
@@ -34,7 +34,7 @@ export default async function Logout() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -45,5 +45,5 @@ export default async function Logout() {
         </div>
       </div>
     </Fragment>
-  );
+  )
 }

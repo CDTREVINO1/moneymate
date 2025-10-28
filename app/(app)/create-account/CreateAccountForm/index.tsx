@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useCallback, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useCallback, useRef, useState } from "react"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useForm } from "react-hook-form"
 
-import { Button } from '../../_components/Button'
-import { Input } from '../../_components/Input'
-import { Message } from '../../_components/Message'
-import { useAuth } from '../../_providers/Auth'
-import classes from './index.module.scss'
+import { Button } from "../../_components/Button"
+import { Input } from "../../_components/Input"
+import { Message } from "../../_components/Message"
+import { useAuth } from "../../_providers/Auth"
+import classes from "./index.module.scss"
 
 type FormData = {
   email: string
@@ -19,7 +19,7 @@ type FormData = {
 
 export const CreateAccountForm: React.FC = () => {
   const searchParams = useSearchParams()
-  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ''
+  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ""
   const { login } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -33,25 +33,29 @@ export const CreateAccountForm: React.FC = () => {
   } = useForm<FormData>()
 
   const password = useRef({})
-  password.current = watch('password', '')
+  password.current = watch("password", "")
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`,
+        {
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+        }
+      )
 
       if (!response.ok) {
-        const message = response.statusText || 'There was an error creating the account.'
+        const message =
+          response.statusText || "There was an error creating the account."
         setError(message)
         return
       }
 
-      const redirect = searchParams.get('redirect')
+      const redirect = searchParams.get("redirect")
 
       const timer = setTimeout(() => {
         setLoading(true)
@@ -60,21 +64,30 @@ export const CreateAccountForm: React.FC = () => {
       try {
         await login(data)
         clearTimeout(timer)
-        if (redirect) {router.push(redirect)}
-        else {router.push(`/account?success=${encodeURIComponent('Account created successfully')}`)}
+        if (redirect) {
+          router.push(redirect)
+        } else {
+          router.push(
+            `/account?success=${encodeURIComponent("Account created successfully")}`
+          )
+        }
       } catch (_) {
         clearTimeout(timer)
-        setError('There was an error with the credentials provided. Please try again.')
+        setError(
+          "There was an error with the credentials provided. Please try again."
+        )
       }
     },
-    [login, router, searchParams],
+    [login, router, searchParams]
   )
 
   return (
     <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
       <p>
         {`This is where new customers can signup and create a new account. To manage all users, `}
-        <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/users`}>
+        <Link
+          href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/users`}
+        >
           login to the admin dashboard
         </Link>
         .
@@ -103,16 +116,18 @@ export const CreateAccountForm: React.FC = () => {
         register={register}
         required
         type="password"
-        validate={(value) => value === password.current || 'The passwords do not match'}
+        validate={(value) =>
+          value === password.current || "The passwords do not match"
+        }
       />
       <Button
         appearance="primary"
         className={classes.submit}
-        label={loading ? 'Processing' : 'Create Account'}
+        label={loading ? "Processing" : "Create Account"}
         type="submit"
       />
       <div>
-        {'Already have an account? '}
+        {"Already have an account? "}
         <Link href={`/login${allParams}`}>Login</Link>
       </div>
     </form>

@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import { Budget, BudgetProvider } from "@/context/BudgetContext";
-import { Transaction, TransactionProvider } from "@/context/TransactionContext";
+import { Budget, BudgetProvider } from "@/context/BudgetContext"
+import { Transaction, TransactionProvider } from "@/context/TransactionContext"
 
-import BudgetList from "./BudgetList";
+import BudgetList from "./BudgetList"
 
 interface BudgetPageWrapperProps {
-  initialBudgets: Budget[];
-  initialTransactions: Transaction[];
+  initialBudgets: Budget[]
+  initialTransactions: Transaction[]
 }
 
 function BudgetPageContent() {
@@ -15,15 +15,18 @@ function BudgetPageContent() {
     <div className="min-h-screen">
       <BudgetList />
     </div>
-  );
+  )
 }
 
-export function BudgetPageWrapper({ initialBudgets, initialTransactions }: BudgetPageWrapperProps,) {
+export function BudgetPageWrapper({
+  initialBudgets,
+  initialTransactions,
+}: BudgetPageWrapperProps) {
   return (
     <TransactionProvider initialTransactions={initialTransactions}>
       <BudgetProvider initialBudgets={initialBudgets}>
         <BudgetPageContent />
       </BudgetProvider>
     </TransactionProvider>
-  );
+  )
 }

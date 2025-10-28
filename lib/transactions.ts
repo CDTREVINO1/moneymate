@@ -1,14 +1,14 @@
-import prisma from "@/lib/prisma";
+import prisma from "@/lib/prisma"
 
 export interface Transaction {
-  id: string;
-  description: string;
-  amount: number;
-  date: string;
-  category: string;
-  authorId: string;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  description: string
+  amount: number
+  date: string
+  category: string
+  authorId: string
+  createdAt: string
+  updatedAt: string
 }
 
 export async function getTransactionsByUserId(
@@ -19,7 +19,7 @@ export async function getTransactionsByUserId(
       where: {
         authorId: userId,
       },
-    });
+    })
 
     return transactions.map((t) => ({
       id: t.id,
@@ -30,9 +30,9 @@ export async function getTransactionsByUserId(
       authorId: t.authorId,
       createdAt: t.createdAt.toISOString(),
       updatedAt: t.updatedAt.toISOString(),
-    }));
+    }))
   } catch (error) {
-    console.error("Error fetching transactions:", error);
-    return [];
+    console.error("Error fetching transactions:", error)
+    return []
   }
 }

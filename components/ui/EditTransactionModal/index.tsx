@@ -1,13 +1,16 @@
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema, TransactionData } from "@/lib/transaction-schema";
-import { format } from "date-fns";
-import { CalendarIcon, Edit, DollarSign } from "lucide-react";
-import { toast } from "sonner";
-import { useTransactions } from "@/context/TransactionContext";
-import CategorySelect from "@/components/ui/category-select";
+import { useState } from "react"
+import { useTransactions } from "@/context/TransactionContext"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
+import { CalendarIcon, DollarSign, Edit } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 
+import { TransactionData, transactionSchema } from "@/lib/transaction-schema"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import CategorySelect from "@/components/ui/category-select"
 import {
   Dialog,
   DialogClose,
@@ -17,30 +20,27 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/popover"
 
 type EditTransactionModalProps = {
-  transactionId: string;
-  description: string;
-  date: string;
-  amount: number;
-  category: string;
-};
+  transactionId: string
+  description: string
+  date: string
+  amount: number
+  category: string
+}
 
 export default function EditTransactionModal({
   transactionId,
@@ -49,9 +49,9 @@ export default function EditTransactionModal({
   amount,
   category,
 }: EditTransactionModalProps) {
-  const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { updateTransaction } = useTransactions();
+  const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { updateTransaction } = useTransactions()
 
   const form = useForm<TransactionData>({
     resolver: zodResolver(transactionSchema),
@@ -61,7 +61,7 @@ export default function EditTransactionModal({
       category: category,
       date: new Date(format(date, "yyyy-MM-dd")),
     },
-  });
+  })
 
   async function onSubmit(data: TransactionData) {
     try {
@@ -78,30 +78,30 @@ export default function EditTransactionModal({
           date: data.date,
           category: data.category,
         }),
-      });
+      })
 
-      const result = await response.json();
+      const result = await response.json()
 
-      toast.success("Transaction updated successfully!");
+      toast.success("Transaction updated successfully!")
 
-      updateTransaction(result);
+      updateTransaction(result)
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update transaction");
+        throw new Error(result.error || "Failed to update transaction")
       }
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
+        error instanceof Error ? error.message : "An error occurred"
       toast.error("Failed to update transaction", {
         description: errorMessage,
-      });
-      console.log(error);
+      })
+      console.log(error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
 
-    setOpen(false);
-    form.reset();
+    setOpen(false)
+    form.reset()
   }
 
   return (
@@ -197,7 +197,7 @@ export default function EditTransactionModal({
                     Amount
                   </FieldLabel>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <DollarSign className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
                     <Input
                       {...field}
                       type="number"
@@ -234,5 +234,5 @@ export default function EditTransactionModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

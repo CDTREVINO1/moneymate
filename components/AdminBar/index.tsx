@@ -1,23 +1,19 @@
-"use client";
+"use client"
 
-import type {
-  PayloadAdminBarProps,
-  PayloadMeUser,
-} from "@payloadcms/admin-bar";
+import React, { useState } from "react"
+import { useRouter, useSelectedLayoutSegments } from "next/navigation"
+import type { User } from "@/payload-types.ts"
+import type { PayloadAdminBarProps, PayloadMeUser } from "@payloadcms/admin-bar"
+import { PayloadAdminBar } from "@payloadcms/admin-bar"
 
-import { cn } from "@/lib/utils";
-import { useSelectedLayoutSegments } from "next/navigation";
-import { PayloadAdminBar } from "@payloadcms/admin-bar";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/(app)/_providers/Auth";
-import type { User } from "@/payload-types.ts";
+import { cn } from "@/lib/utils"
+import { useAuth } from "@/app/(app)/_providers/Auth"
 
-import "./index.scss";
+import "./index.scss"
 
-import { getClientSideURL } from "@/utilities/getURL";
+import { getClientSideURL } from "@/utilities/getURL"
 
-const baseClass = "admin-bar";
+const baseClass = "admin-bar"
 
 const collectionLabels = {
   pages: {
@@ -32,33 +28,33 @@ const collectionLabels = {
     plural: "Projects",
     singular: "Project",
   },
-};
+}
 
-const Title: React.FC = () => <span>Dashboard</span>;
+const Title: React.FC = () => <span>Dashboard</span>
 
 export const AdminBar: React.FC<{
-  adminBarProps?: PayloadAdminBarProps;
+  adminBarProps?: PayloadAdminBarProps
 }> = (props) => {
-  const { user } = useAuth<User>();
-  const { adminBarProps } = props || {};
-  const segments = useSelectedLayoutSegments();
-  const [show, setShow] = useState(false);
+  const { user } = useAuth<User>()
+  const { adminBarProps } = props || {}
+  const segments = useSelectedLayoutSegments()
+  const [show, setShow] = useState(false)
   const collection = (
     collectionLabels[segments?.[1] as keyof typeof collectionLabels]
       ? segments[1]
       : "pages"
-  ) as keyof typeof collectionLabels;
-  const router = useRouter();
+  ) as keyof typeof collectionLabels
+  const router = useRouter()
 
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
-    setShow(Boolean(user?.id));
-  }, []);
+    setShow(Boolean(user?.id))
+  }, [])
 
-  if (!user) return;
+  if (!user) return
 
   return (
     <div
-      className={cn(baseClass, "py-2 bg-black text-white", {
+      className={cn(baseClass, "bg-black py-2 text-white", {
         block: show,
         hidden: !show,
       })}
@@ -82,9 +78,9 @@ export const AdminBar: React.FC<{
           onAuthChange={onAuthChange}
           onPreviewExit={() => {
             fetch("/next/exit-preview").then(() => {
-              router.push("/");
-              router.refresh();
-            });
+              router.push("/")
+              router.refresh()
+            })
           }}
           style={{
             backgroundColor: "transparent",
@@ -95,5 +91,5 @@ export const AdminBar: React.FC<{
         />
       </div>
     </div>
-  );
-};
+  )
+}

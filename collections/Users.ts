@@ -1,9 +1,10 @@
-import type { CollectionConfig } from 'payload'
-import { admins } from "@/access/admins";
-import { checkRole } from "@/access/checkRole";
-import { anyone } from "@/access/anyone";
-import { adminsAndUser } from "@/access/adminsAndUser";
-import { protectRoles } from "./hooks/protectRoles";
+import { admins } from "@/access/admins"
+import { adminsAndUser } from "@/access/adminsAndUser"
+import { anyone } from "@/access/anyone"
+import { checkRole } from "@/access/checkRole"
+import type { CollectionConfig } from "payload"
+
+import { protectRoles } from "./hooks/protectRoles"
 
 export const Users: CollectionConfig = {
   slug: "users",
@@ -89,4 +90,4 @@ export const Users: CollectionConfig = {
     },
   ],
   timestamps: true,
-};
+}

@@ -1,9 +1,8 @@
-"use client";
+"use client"
 
-import { useAuth } from "@/app/(app)/_providers/Auth";
-import type { User } from "@/payload-types.ts";
-import * as React from "react";
-import Link from "next/link";
+import * as React from "react"
+import Link from "next/link"
+import type { User } from "@/payload-types.ts"
 
 import {
   NavigationMenu,
@@ -13,12 +12,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from "@/components/ui/navigation-menu"
+import { useAuth } from "@/app/(app)/_providers/Auth"
 
 export function NavMenu() {
-  const { user } = useAuth<User>();
+  const { user } = useAuth<User>()
 
-  if (!user) return;
+  if (!user) return
 
   return (
     <NavigationMenu>
@@ -40,5 +40,5 @@ export function NavMenu() {
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
-  );
+  )
 }

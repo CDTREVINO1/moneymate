@@ -1,17 +1,18 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema, TransactionData } from "@/lib/transaction-schema";
-import { format } from "date-fns";
-import { CalendarIcon, SquarePlus, DollarSign } from "lucide-react";
-import { toast } from "sonner";
-import { useTransactions } from "@/context/TransactionContext";
+import { useState } from "react"
+import { useTransactions } from "@/context/TransactionContext"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
+import { CalendarIcon, DollarSign, SquarePlus } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { TransactionData, transactionSchema } from "@/lib/transaction-schema"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import CategorySelect from "@/components/ui/category-select"
 import {
   Dialog,
   DialogClose,
@@ -21,25 +22,24 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Input } from "@/components/ui/input";
-import CategorySelect from "@/components/ui/category-select";
+} from "@/components/ui/popover"
 
 export const TransactionFormModal: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { addTransaction } = useTransactions();
+  const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { addTransaction } = useTransactions()
 
   const form = useForm<TransactionData>({
     resolver: zodResolver(transactionSchema),
@@ -48,12 +48,12 @@ export const TransactionFormModal: React.FC = () => {
       amount: 0,
       category: "",
     },
-  });
+  })
 
   async function onSubmit(data: TransactionData) {
-    setIsLoading(true);
+    setIsLoading(true)
 
-    const { amount, category, description, date } = data;
+    const { amount, category, description, date } = data
 
     try {
       const response = await fetch("/api/transactions", {
@@ -68,28 +68,28 @@ export const TransactionFormModal: React.FC = () => {
           date: date,
           category: category,
         }),
-      });
+      })
 
-      const result = await response.json();
-      toast.success("Transaction saved successfully!");
-      addTransaction(result);
-      form.reset();
+      const result = await response.json()
+      toast.success("Transaction saved successfully!")
+      addTransaction(result)
+      form.reset()
       if (!response.ok) {
-        toast.error(result.error || "Failed to create transaction");
+        toast.error(result.error || "Failed to create transaction")
       }
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "An error occurred";
+        error instanceof Error ? error.message : "An error occurred"
       toast.error("Failed to create transaction", {
         description: errorMessage,
-      });
-      console.log(error);
+      })
+      console.log(error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
 
-    setOpen(false);
-    form.reset();
+    setOpen(false)
+    form.reset()
   }
 
   return (
@@ -184,7 +184,7 @@ export const TransactionFormModal: React.FC = () => {
                     Amount
                   </FieldLabel>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <DollarSign className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
                     <Input
                       {...field}
                       type="number"
@@ -221,5 +221,5 @@ export const TransactionFormModal: React.FC = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}

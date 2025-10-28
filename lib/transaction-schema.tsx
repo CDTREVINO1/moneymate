@@ -1,10 +1,11 @@
-import { z } from "zod";
-import { TRANSACTION_CATEGORIES } from "@/lib/categories";
+import { z } from "zod"
+
+import { TRANSACTION_CATEGORIES } from "@/lib/categories"
 
 const validCategories = TRANSACTION_CATEGORIES.map((cat) => cat.id) as [
   string,
   ...string[],
-];
+]
 
 export const transactionSchema = z.object({
   description: z.string().min(2).max(50),
@@ -16,6 +17,6 @@ export const transactionSchema = z.object({
   category: z.enum(validCategories, {
     error: () => ({ message: "Please select a valid category" }),
   }),
-});
+})
 
-export type TransactionData = z.infer<typeof transactionSchema>;
+export type TransactionData = z.infer<typeof transactionSchema>

@@ -1,19 +1,19 @@
 // components/CategorySelect.tsx
-import { TRANSACTION_CATEGORIES } from "@/lib/categories";
-import { Controller } from "react-hook-form";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { Controller } from "react-hook-form"
 
+import { TRANSACTION_CATEGORIES } from "@/lib/categories"
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 
 interface CategorySelectProps {
-  control: any;
-  error?: any;
+  control: any
+  error?: any
 }
 
 export default function CategorySelect({
@@ -48,7 +48,7 @@ export default function CategorySelect({
         </Field>
       )}
     />
-  );
+  )
 }
 
 // Optional: Enhanced version with descriptions
@@ -73,19 +73,19 @@ export function CategorySelectWithDescriptions({
               <SelectValue placeholder="Select a category" />
             </SelectTrigger>
             <SelectContent position="item-aligned">
-                {TRANSACTION_CATEGORIES.map((category) => (
-                  <SelectItem
-                    key={category.id}
-                    value={category.id}
-                    title={category.description}
-                  >
-                    {category.label}
-                  </SelectItem>
-                ))}
+              {TRANSACTION_CATEGORIES.map((category) => (
+                <SelectItem
+                  key={category.id}
+                  value={category.id}
+                  title={category.description}
+                >
+                  {category.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           {field.value && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="mt-1 text-xs text-gray-500">
               {
                 TRANSACTION_CATEGORIES.find((c) => c.id === field.value)
                   ?.description
@@ -96,5 +96,5 @@ export function CategorySelectWithDescriptions({
         </Field>
       )}
     />
-  );
+  )
 }

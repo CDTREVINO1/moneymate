@@ -8,16 +8,19 @@ export const USER = `
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const gql = async (query: string): Promise<any> => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
-      body: JSON.stringify({
-        query,
-      }),
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    })
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`,
+      {
+        body: JSON.stringify({
+          query,
+        }),
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }
+    )
 
     const { data, errors } = await res.json()
 

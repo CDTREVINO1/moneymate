@@ -2,6 +2,8 @@
 
 import React from "react"
 import { useRouter } from "next/navigation"
+
+import { cn } from "@/lib/utils"
 import {
   Pagination as PaginationComponent,
   PaginationContent,
@@ -11,7 +13,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { cn } from "@/lib/utils"
 
 export const Pagination: React.FC<{
   className?: string

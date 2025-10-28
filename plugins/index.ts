@@ -1,8 +1,6 @@
-import { revalidateRedirects } from "@/hooks/revalidateRedirects"
 import { Page, Post } from "@/payload-types"
 import { beforeSyncWithSearch } from "@/search/beforeSync"
 import { searchFields } from "@/search/fieldOverrides"
-import { getServerSideURL } from "@/utilities/getURL"
 import { payloadCloudPlugin } from "@payloadcms/payload-cloud"
 import { formBuilderPlugin } from "@payloadcms/plugin-form-builder"
 import { nestedDocsPlugin } from "@payloadcms/plugin-nested-docs"
@@ -16,6 +14,9 @@ import {
   lexicalEditor,
 } from "@payloadcms/richtext-lexical"
 import { Plugin } from "payload"
+
+import { revalidateRedirects } from "@/hooks/revalidateRedirects"
+import { getServerSideURL } from "@/utilities/getURL"
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
   return doc?.title

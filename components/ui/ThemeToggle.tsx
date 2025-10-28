@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun } from "lucide-react";
+import * as React from "react"
+import { useEffect, useState } from "react"
+import { Monitor, Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/dropdown-menu"
 
 const themes = [
   {
@@ -30,17 +30,17 @@ const themes = [
     Icon: Monitor,
     value: "system",
   },
-] as const;
+] as const
 
 export function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
-  const { setTheme, theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false)
+  const { setTheme, theme, resolvedTheme } = useTheme()
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
-  if (!mounted) return null;
+  if (!mounted) return null
 
   return (
     <DropdownMenu>
@@ -66,5 +66,5 @@ export function ThemeToggle() {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

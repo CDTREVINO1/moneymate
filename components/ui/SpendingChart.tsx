@@ -1,23 +1,23 @@
+"use client"
 
-"use client";
-
-import { useMemo } from "react";
+import { useMemo } from "react"
+import { Transaction } from "@/context/TransactionContext"
+import { TrendingUp } from "lucide-react"
 import {
-  PieChart,
-  Pie,
   Cell,
-  ResponsiveContainer,
   Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
   Tooltip,
-} from "recharts";
-import { Transaction } from "@/context/TransactionContext";
-import { getCategoryLabel } from "@/lib/categories";
-import { TrendingUp } from "lucide-react";
+} from "recharts"
+
+import { getCategoryLabel } from "@/lib/categories"
 
 interface SpendingChartProps {
-  transactions: Transaction[];
-  title?: string;
-  showTotal?: boolean;
+  transactions: Transaction[]
+  title?: string
+  showTotal?: boolean
 }
 
 // Color palette for categories
@@ -34,7 +34,7 @@ const COLORS = [
   "#6366f1", // indigo
   "#84cc16", // lime
   "#f43f5e", // rose
-];
+]
 
 export default function SpendingChart({
   transactions,
@@ -43,19 +43,19 @@ export default function SpendingChart({
 }: SpendingChartProps) {
   // Calculate spending by category
   const chartData = useMemo(() => {
-    const categoryTotals: Record<string, number> = {};
+    const categoryTotals: Record<string, number> = {}
 
     transactions.forEach((transaction) => {
       if (!categoryTotals[transaction.category]) {
-        categoryTotals[transaction.category] = 0;
+        categoryTotals[transaction.category] = 0
       }
-      categoryTotals[transaction.category] += transaction.amount;
-    });
+      categoryTotals[transaction.category] += transaction.amount
+    })
 
     const total = Object.values(categoryTotals).reduce(
       (sum, amount) => sum + amount,
       0
-    );
+    )
 
     return Object.entries(categoryTotals)
       .map(([category, amount]) => ({
@@ -64,49 +64,49 @@ export default function SpendingChart({
         value: amount,
         percentage: total > 0 ? (amount / total) * 100 : 0,
       }))
-      .sort((a, b) => b.value - a.value);
-  }, [transactions]);
+      .sort((a, b) => b.value - a.value)
+  }, [transactions])
 
-  const totalSpending = chartData.reduce((sum, item) => sum + item.value, 0);
+  const totalSpending = chartData.reduce((sum, item) => sum + item.value, 0)
 
   // Custom label for pie chart
   const renderLabel = (entry: any) => {
-    return `${entry.percentage.toFixed(1)}%`;
-  };
+    return `${entry.percentage.toFixed(1)}%`
+  }
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
+      const data = payload[0].payload
       return (
-        <div className="p-3 rounded-lg shadow-lg border border-gray-200">
+        <div className="rounded-lg border border-gray-200 p-3 shadow-lg">
           <p className="font-semibold">{data.name}</p>
           <p className="text-sm">${data.value.toFixed(2)}</p>
           <p className="text-xs">{data.percentage.toFixed(1)}% of total</p>
         </div>
-      );
+      )
     }
-    return null;
-  };
+    return null
+  }
 
   if (chartData.length === 0) {
     return (
-      <div className="h-full rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">{title}</h2>
+      <div className="h-full rounded-lg p-6 shadow">
+        <h2 className="mb-4 text-xl font-bold">{title}</h2>
         <div className="flex flex-col items-center justify-center py-12">
-          <TrendingUp className="h-12 w-12 mb-3" />
+          <TrendingUp className="mb-3 h-12 w-12" />
           <p>No spending data available</p>
-          <p className="text-sm mt-1">
+          <p className="mt-1 text-sm">
             Add some transactions to see your spending breakdown
           </p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="rounded-lg shadow px-12 pt-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="h-full rounded-lg px-12 pt-6 shadow">
+      <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold">{title}</h2>
         {showTotal && (
           <div className="text-right">
@@ -116,7 +116,7 @@ export default function SpendingChart({
         )}
       </div>
 
-      <div className="w-full h-80">
+      <div className="h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -141,8 +141,8 @@ export default function SpendingChart({
               verticalAlign="bottom"
               height={36}
               formatter={(value, entry: any) => {
-                const item = chartData.find((d) => d.name === value);
-                return `${value} (${item?.percentage.toFixed(1)}%)`;
+                const item = chartData.find((d) => d.name === value)
+                return `${value} (${item?.percentage.toFixed(1)}%)`
               }}
             />
           </PieChart>
@@ -150,7 +150,7 @@ export default function SpendingChart({
       </div>
 
       {/* Category List */}
-      <div className="invisible md:visible mt-6 space-y-2">
+      <div className="invisible mt-6 space-y-2 md:visible">
         {chartData.slice(0, 5).map((item, index) => (
           <div
             key={item.category}
@@ -158,7 +158,7 @@ export default function SpendingChart({
           >
             <div className="flex items-center gap-2">
               <div
-                className="w-3 h-3 rounded-full"
+                className="h-3 w-3 rounded-full"
                 style={{ backgroundColor: COLORS[index % COLORS.length] }}
               />
               <span className="text-sm font-medium">{item.name}</span>
@@ -167,19 +167,19 @@ export default function SpendingChart({
               <span className="text-sm font-semibold">
                 ${item.value.toFixed(2)}
               </span>
-              <span className="text-xs ml-2">
+              <span className="ml-2 text-xs">
                 ({item.percentage.toFixed(1)}%)
               </span>
             </div>
           </div>
         ))}
         {chartData.length > 5 && (
-          <p className="text-xs text-center pt-2">
+          <p className="pt-2 text-center text-xs">
             +{chartData.length - 5} more{" "}
             {chartData.length - 5 === 1 ? "category" : "categories"}
           </p>
         )}
       </div>
     </div>
-  );
+  )
 }

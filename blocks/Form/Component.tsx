@@ -2,15 +2,16 @@
 
 import React, { useCallback, useState } from "react"
 import { useRouter } from "next/navigation"
-import RichText from "@/components/RichText"
-import { Button } from "@/components/ui/button"
-import { getClientSideURL } from "@/utilities/getURL"
 import type {
   FormFieldBlock,
   Form as FormType,
 } from "@payloadcms/plugin-form-builder/types"
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical"
 import { FormProvider, useForm } from "react-hook-form"
+
+import { Button } from "@/components/ui/button"
+import RichText from "@/components/RichText"
+import { getClientSideURL } from "@/utilities/getURL"
 
 import { fields } from "./fields"
 
@@ -136,7 +137,7 @@ export const FormBlock: React.FC<
           enableGutter={false}
         />
       )}
-      <div className="p-4 lg:p-6 border border-border rounded-[0.8rem]">
+      <div className="rounded-[0.8rem] border border-border p-4 lg:p-6">
         <FormProvider {...formMethods}>
           {!isLoading && hasSubmitted && confirmationType === "message" && (
             <RichText data={confirmationMessage} />

@@ -4,8 +4,9 @@ import React from "react"
 import type { StaticImageData } from "next/image"
 import NextImage from "next/image"
 import { cssVariables } from "@/cssVariables"
-import { getMediaUrl } from "@/utilities/getMediaUrl"
+
 import { cn } from "@/lib/utils"
+import { getMediaUrl } from "@/utilities/getMediaUrl"
 
 import type { Props as MediaProps } from "../types"
 

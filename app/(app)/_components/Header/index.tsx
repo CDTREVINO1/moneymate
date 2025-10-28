@@ -1,10 +1,10 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
+import React from "react"
+import Image from "next/image"
+import Link from "next/link"
 
-import { Gutter } from '../Gutter'
-import { HeaderNav } from './Nav'
-import classes from './index.module.scss'
+import { Gutter } from "../Gutter"
+import classes from "./index.module.scss"
+import { HeaderNav } from "./Nav"
 
 export const Header = () => {
   return (

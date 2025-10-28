@@ -1,10 +1,11 @@
-import { z } from "zod";
-import { TRANSACTION_CATEGORIES } from "@/lib/categories";
+import { z } from "zod"
+
+import { TRANSACTION_CATEGORIES } from "@/lib/categories"
 
 const validCategories = TRANSACTION_CATEGORIES.map((cat) => cat.id) as [
   string,
   ...string[],
-];
+]
 
 export const budgetSchema = z.object({
   name: z
@@ -22,6 +23,6 @@ export const budgetSchema = z.object({
     error: () => ({ message: "Please select a valid period" }),
   }),
   startDate: z.date(),
-});
+})
 
-export type BudgetFormData = z.infer<typeof budgetSchema>;
+export type BudgetFormData = z.infer<typeof budgetSchema>

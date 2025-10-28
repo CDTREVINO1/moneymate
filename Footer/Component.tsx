@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import Link from "next/link"
 import type { Footer } from "@/payload-types"
 
@@ -21,11 +21,11 @@ export async function Footer() {
         <div className="flex flex-col-reverse items-start gap-4 md:flex-row md:items-center">
           <nav className="flex flex-col gap-4 md:flex-row">
             {navItems.map(({ link }, i) => {
-              return <CMSLink className="" key={i} {...link} />;
+              return <CMSLink className="" key={i} {...link} />
             })}
           </nav>
         </div>
       </div>
     </footer>
-  );
+  )
 }

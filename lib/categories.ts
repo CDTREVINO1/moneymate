@@ -1,9 +1,9 @@
 export interface TransactionCategory {
-  id: string;
-  label: string;
-  description: string;
-  color: string;
-  icon: string; // For future use with icon libraries
+  id: string
+  label: string
+  description: string
+  color: string
+  icon: string // For future use with icon libraries
 }
 
 export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
@@ -133,21 +133,21 @@ export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
     color: "bg-neutral-100 text-neutral-800 border-neutral-200",
     icon: "more-horizontal",
   },
-];
+]
 
 // Helper function to get category by ID
 export function getCategoryById(id: string): TransactionCategory | undefined {
-  return TRANSACTION_CATEGORIES.find((cat) => cat.id === id);
+  return TRANSACTION_CATEGORIES.find((cat) => cat.id === id)
 }
 
 // Helper function to get category label
 export function getCategoryLabel(id: string): string {
-  return getCategoryById(id)?.label || "Unknown";
+  return getCategoryById(id)?.label || "Unknown"
 }
 
 // Helper function to get category color
 export function getCategoryColor(id: string): string {
-  return getCategoryById(id)?.color || "bg-gray-100 text-gray-800";
+  return getCategoryById(id)?.color || "bg-gray-100 text-gray-800"
 }
 
 // For form select options
@@ -155,5 +155,5 @@ export function getCategoryOptions() {
   return TRANSACTION_CATEGORIES.map((cat) => ({
     value: cat.id,
     label: cat.label,
-  }));
+  }))
 }

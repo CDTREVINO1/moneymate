@@ -1,10 +1,11 @@
-"use client";
+"use client"
 
-import { Transaction, TransactionProvider } from "@/context/TransactionContext";
-import { TransactionsList } from "./TransactionsList";
+import { Transaction, TransactionProvider } from "@/context/TransactionContext"
+
+import { TransactionsList } from "./TransactionsList"
 
 interface TransactionPageWrapperProps {
-  initialTransactions: Transaction[];
+  initialTransactions: Transaction[]
 }
 
 function TransactionPageContent() {
@@ -12,7 +13,7 @@ function TransactionPageContent() {
     <div className="min-h-screen">
       <TransactionsList />
     </div>
-  );
+  )
 }
 
 export function TransactionPageWrapper({
@@ -22,5 +23,5 @@ export function TransactionPageWrapper({
     <TransactionProvider initialTransactions={initialTransactions}>
       <TransactionPageContent />
     </TransactionProvider>
-  );
+  )
 }

@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { budgetSchema, BudgetFormData } from "@/lib/budget-schema";
-import { format } from "date-fns";
-import { CalendarIcon, Edit, DollarSign } from "lucide-react";
-import { toast } from "sonner";
-import { useBudgets, Budget } from "@/context/BudgetContext";
-import CategorySelect from "../category-select";
+import React, { useState } from "react"
+import { Budget, useBudgets } from "@/context/BudgetContext"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { format } from "date-fns"
+import { CalendarIcon, DollarSign, Edit } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 
+import { BudgetFormData, budgetSchema } from "@/lib/budget-schema"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Dialog,
   DialogClose,
@@ -17,33 +19,30 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field";
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/popover"
+
+import CategorySelect from "../category-select"
 
 type EditBudgetModalProps = {
-  budget: Budget | null;
+  budget: Budget | null
 }
 
-export default function EditBudgetModal({
-  budget,
-}: EditBudgetModalProps) {
-  const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { updateBudget } = useBudgets();
+export default function EditBudgetModal({ budget }: EditBudgetModalProps) {
+  const [open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { updateBudget } = useBudgets()
 
   const form = useForm<BudgetFormData>({
     resolver: zodResolver(budgetSchema),
@@ -55,12 +54,12 @@ export default function EditBudgetModal({
       startDate: new Date(budget.startDate) || format(new Date(), "yyyy-MM-dd"),
     },
     mode: "onBlur",
-  });
+  })
 
   async function onSubmit(data: BudgetFormData) {
-    if (!budget) return;
+    if (!budget) return
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const response = await fetch(`/api/budgets/${budget.id}`, {
@@ -76,27 +75,27 @@ export default function EditBudgetModal({
           period: data.period,
           startDate: data.startDate,
         }),
-      });
+      })
 
-      const result = await response.json();
+      const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to update budget");
+        throw new Error(result.error || "Failed to update budget")
       }
 
-      toast.success("Budget updated successfully!");
+      toast.success("Budget updated successfully!")
 
-      updateBudget(result);
+      updateBudget(result)
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "An error occurred";
-      toast.error("Failed to update budget", { description: errorMessage });
+        err instanceof Error ? err.message : "An error occurred"
+      toast.error("Failed to update budget", { description: errorMessage })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
 
-    setOpen(false);
-    form.reset();
+    setOpen(false)
+    form.reset()
   }
 
   return (
@@ -147,7 +146,7 @@ export default function EditBudgetModal({
                     Amount
                   </FieldLabel>
                   <div className="relative">
-                    <DollarSign className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                    <DollarSign className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
                     <Input
                       {...field}
                       type="number"
@@ -177,7 +176,7 @@ export default function EditBudgetModal({
                     {...field}
                     id="edit-period"
                     aria-invalid={fieldState.invalid}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   >
                     <option value="weekly">Weekly</option>
                     <option value="monthly">Monthly</option>
@@ -252,5 +251,5 @@ export default function EditBudgetModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

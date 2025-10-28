@@ -1,8 +1,9 @@
 "use client"
 
 import React, { useEffect, useRef } from "react"
-import { getMediaUrl } from "@/utilities/getMediaUrl"
+
 import { cn } from "@/lib/utils"
+import { getMediaUrl } from "@/utilities/getMediaUrl"
 
 import type { Props as MediaProps } from "../types"
 

@@ -1,58 +1,58 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
 import React, {
   Fragment,
   useCallback,
   useEffect,
   useRef,
   useState,
-} from "react";
-import { Controller, useForm } from "react-hook-form";
+} from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Save } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Message } from "../../_components/Message";
-import { useAuth } from "../../_providers/Auth";
-import { Save } from "lucide-react";
-
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldError,
-} from "@/components/ui/field";
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+
+import { Message } from "../../_components/Message"
+import { useAuth } from "../../_providers/Auth"
 
 type FormData = {
-  email: string;
-  name: string;
-  password: string;
-  passwordConfirm: string;
-};
+  email: string
+  name: string
+  password: string
+  passwordConfirm: string
+}
 
 export const AccountForm: React.FC = () => {
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const { setUser, user, permissions } = useAuth();
-  const [changePassword, setChangePassword] = useState(false);
-  const router = useRouter();
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+  const { setUser, user, permissions } = useAuth()
+  const [changePassword, setChangePassword] = useState(false)
+  const router = useRouter()
 
   const form = useForm<FormData>({
     defaultValues: {
       email: "",
     },
-  });
+  })
 
-  const password = useRef({});
-  password.current = form.watch("password", "");
+  const password = useRef({})
+  password.current = form.watch("password", "")
 
   const onSubmit = useCallback(
     async (data: FormData) => {
@@ -68,31 +68,31 @@ export const AccountForm: React.FC = () => {
             },
             method: "PATCH",
           }
-        );
+        )
 
         if (response.ok) {
-          const json = await response.json();
-          setUser(json.doc);
-          setSuccess("Successfully updated account.");
-          setError("");
-          setChangePassword(false);
+          const json = await response.json()
+          setUser(json.doc)
+          setSuccess("Successfully updated account.")
+          setError("")
+          setChangePassword(false)
           form.reset({
             name: json.doc.name,
             email: json.doc.email,
             password: "",
             passwordConfirm: "",
-          });
+          })
         } else {
-          setError("There was a problem updating your account.");
+          setError("There was a problem updating your account.")
         }
       }
     },
     [user, setUser, form]
-  );
+  )
 
   useEffect(() => {
     if (user === null) {
-      router.push(`/login?unauthorized=account`);
+      router.push(`/login?unauthorized=account`)
     }
 
     // Once user is loaded, reset form to have default values
@@ -101,9 +101,9 @@ export const AccountForm: React.FC = () => {
         email: user.email,
         password: "",
         passwordConfirm: "",
-      });
+      })
     }
-  }, [user, router, form, changePassword]);
+  }, [user, router, form, changePassword])
 
   return (
     <Card className="w-full sm:max-w-md">
@@ -229,7 +229,7 @@ export const AccountForm: React.FC = () => {
                 : changePassword
                   ? "Change password"
                   : "Update account"}
-          <Save />
+              <Save />
             </Button>
             <div className="flex flex-row justify-evenly">
               <Button
@@ -251,5 +251,5 @@ export const AccountForm: React.FC = () => {
         </form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

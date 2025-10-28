@@ -1,14 +1,14 @@
-'use client'
+"use client"
 
-import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useCallback, useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useForm } from "react-hook-form"
 
-import { Button } from '../../_components/Button'
-import { Input } from '../../_components/Input'
-import { Message } from '../../_components/Message'
-import { useAuth } from '../../_providers/Auth'
-import classes from './index.module.scss'
+import { Button } from "../../_components/Button"
+import { Input } from "../../_components/Input"
+import { Message } from "../../_components/Message"
+import { useAuth } from "../../_providers/Auth"
+import classes from "./index.module.scss"
 
 type FormData = {
   password: string
@@ -16,11 +16,11 @@ type FormData = {
 }
 
 export const ResetPasswordForm: React.FC = () => {
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
   const { login } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const token = searchParams.get('token')
+  const token = searchParams.get("token")
 
   const {
     formState: { errors },
@@ -36,10 +36,10 @@ export const ResetPasswordForm: React.FC = () => {
         {
           body: JSON.stringify(data),
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          method: 'POST',
-        },
+          method: "POST",
+        }
       )
 
       if (response.ok) {
@@ -49,12 +49,14 @@ export const ResetPasswordForm: React.FC = () => {
         await login({ email: json.user.email, password: data.password })
 
         // Redirect them to `/account` with success message in URL
-        router.push('/account?success=Password reset successfully.')
+        router.push("/account?success=Password reset successfully.")
       } else {
-        setError('There was a problem while resetting your password. Please try again later.')
+        setError(
+          "There was a problem while resetting your password. Please try again later."
+        )
       }
     },
-    [router, login],
+    [router, login]
   )
 
   // when Next.js populates token within router,
@@ -74,7 +76,7 @@ export const ResetPasswordForm: React.FC = () => {
         required
         type="password"
       />
-      <input type="hidden" {...register('token')} />
+      <input type="hidden" {...register("token")} />
       <Button
         appearance="primary"
         className={classes.submit}

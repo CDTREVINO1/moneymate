@@ -1,68 +1,66 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { useCallback, useRef } from "react"
+import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
+import { Controller, useForm } from "react-hook-form"
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Message } from "../../_components/Message";
-import { useAuth } from "../../_providers/Auth";
-
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldError,
-} from "@/components/ui/field";
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+
+import { Message } from "../../_components/Message"
+import { useAuth } from "../../_providers/Auth"
 
 type FormData = {
-  email: string;
-  password: string;
-};
+  email: string
+  password: string
+}
 
 export const LoginForm: React.FC = () => {
-  const searchParams = useSearchParams();
-  const allParams = searchParams.toString()
-    ? `?${searchParams.toString()}`
-    : "";
-  const redirect = useRef(searchParams.get("redirect"));
-  const { login } = useAuth();
-  const router = useRouter();
-  const [error, setError] = React.useState<null | string>(null);
+  const searchParams = useSearchParams()
+  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ""
+  const redirect = useRef(searchParams.get("redirect"))
+  const { login } = useAuth()
+  const router = useRouter()
+  const [error, setError] = React.useState<null | string>(null)
 
   const form = useForm<FormData>({
     defaultValues: {
       email: "demo@payloadcms.com",
       password: "demo",
     },
-  });
+  })
 
   const onSubmit = useCallback(
     async (data: FormData) => {
       try {
-        await login(data);
+        await login(data)
         if (redirect?.current) {
-          router.push(redirect.current);
+          router.push(redirect.current)
         } else {
-          router.push("/account");
+          router.push("/account")
         }
       } catch (_) {
         setError(
           "There was an error with the credentials provided. Please try again."
-        );
+        )
       }
     },
     [login, router]
-  );
+  )
 
   return (
     <Card className="w-full sm:max-w-md">
@@ -154,5 +152,5 @@ export const LoginForm: React.FC = () => {
         </form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

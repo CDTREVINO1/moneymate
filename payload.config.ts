@@ -1,23 +1,23 @@
 // storage-adapter-import-placeholder
-import { mongooseAdapter } from '@payloadcms/db-mongodb'
-import { defaultLexical } from "@/fields/defaultLexical";
-import path from "path";
-import { buildConfig } from "payload";
-import { fileURLToPath } from "url";
-import sharp from "sharp";
+import path from "path"
+import { fileURLToPath } from "url"
+import { defaultLexical } from "@/fields/defaultLexical"
+import { mongooseAdapter } from "@payloadcms/db-mongodb"
+import { buildConfig } from "payload"
+import sharp from "sharp"
 
-import { Users } from "./collections/Users";
-import { Media } from "./collections/Media";
-import { Categories } from "./collections/Categories";
-import { Pages } from "./collections/Pages";
-import { Posts } from "./collections/Posts";
-import { getServerSideURL } from "./utilities/getURL";
-import { Footer } from "./Footer/config";
-import { Header } from "./Header/config";
-import { plugins } from "./plugins";
+import { Categories } from "./collections/Categories"
+import { Media } from "./collections/Media"
+import { Pages } from "./collections/Pages"
+import { Posts } from "./collections/Posts"
+import { Users } from "./collections/Users"
+import { Footer } from "./Footer/config"
+import { Header } from "./Header/config"
+import { plugins } from "./plugins"
+import { getServerSideURL } from "./utilities/getURL"
 
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
@@ -58,4 +58,4 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
-});
+})

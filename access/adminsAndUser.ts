@@ -1,10 +1,10 @@
-import type { Access } from 'payload'
+import type { Access } from "payload"
 
-import { checkRole } from './checkRole'
+import { checkRole } from "./checkRole"
 
 export const adminsAndUser: Access = ({ req: { user } }) => {
   if (user) {
-    if (checkRole(['admin'], user)) {
+    if (checkRole(["admin"], user)) {
       return true
     }
 

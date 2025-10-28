@@ -1,14 +1,12 @@
-"use client";
+"use client"
 
-import React, { Fragment } from "react";
-import Link from "next/link";
-import type { Header as HeaderType } from "@/payload-types";
-import { SearchIcon, Menu } from "lucide-react";
+import React, { Fragment } from "react"
+import Link from "next/link"
+import type { Header as HeaderType } from "@/payload-types"
+import type { User } from "@/payload-types.ts"
+import { Menu, SearchIcon } from "lucide-react"
 
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { CMSLink } from "@/components/Link";
-import { Button } from "@/components/ui/button";
-
+import { Button } from "@/components/ui/button"
 import {
   Sheet,
   SheetClose,
@@ -17,20 +15,20 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-
-import { useAuth } from "@/app/(app)/_providers/Auth";
-import type { User } from "@/payload-types.ts";
+} from "@/components/ui/sheet"
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
+import { CMSLink } from "@/components/Link"
+import { useAuth } from "@/app/(app)/_providers/Auth"
 
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
-  const { user, permissions } = useAuth<User>();
-  const navItems = data?.navItems || [];
+  const { user, permissions } = useAuth<User>()
+  const navItems = data?.navItems || []
 
   return (
     <nav className="flex items-center justify-between">
-      <div className="hidden md:flex items-center gap-3">
+      <div className="hidden items-center gap-3 md:flex">
         {navItems.map(({ link }, i) => {
-          return <CMSLink key={i} {...link} appearance="link" />;
+          return <CMSLink key={i} {...link} appearance="link" />
         })}
 
         {!user ? (
@@ -84,7 +82,7 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
                   <SheetClose key={i} asChild>
                     <CMSLink key={i} {...link} appearance="link" />
                   </SheetClose>
-                );
+                )
               })}
 
               {!user ? (
@@ -122,5 +120,5 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         </Sheet>
       </div>
     </nav>
-  );
-};
+  )
+}

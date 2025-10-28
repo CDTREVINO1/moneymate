@@ -1,20 +1,20 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import React, { Fragment, useCallback, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import React, { Fragment, useCallback, useState } from "react"
+import Link from "next/link"
+import { useForm } from "react-hook-form"
 
-import { Button } from '../../_components/Button'
-import { Input } from '../../_components/Input'
-import { Message } from '../../_components/Message'
-import classes from './index.module.scss'
+import { Button } from "../../_components/Button"
+import { Input } from "../../_components/Input"
+import { Message } from "../../_components/Message"
+import classes from "./index.module.scss"
 
 type FormData = {
   email: string
 }
 
 export const RecoverPasswordForm: React.FC = () => {
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
 
   const {
@@ -29,18 +29,18 @@ export const RecoverPasswordForm: React.FC = () => {
       {
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        method: 'POST',
-      },
+        method: "POST",
+      }
     )
 
     if (response.ok) {
       setSuccess(true)
-      setError('')
+      setError("")
     } else {
       setError(
-        'There was a problem while attempting to send you a password reset email. Please try again.',
+        "There was a problem while attempting to send you a password reset email. Please try again."
       )
     }
   }, [])
@@ -54,7 +54,9 @@ export const RecoverPasswordForm: React.FC = () => {
             <p>
               {`Please enter your email below. You will receive an email message with instructions on
               how to reset your password. To manage all of your users, `}
-              <Link href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/users`}>
+              <Link
+                href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/users`}
+              >
                 login to the admin dashboard
               </Link>
               .
@@ -82,7 +84,10 @@ export const RecoverPasswordForm: React.FC = () => {
       {success && (
         <React.Fragment>
           <h1>Request submitted</h1>
-          <p>Check your email for a link that will allow you to securely reset your password.</p>
+          <p>
+            Check your email for a link that will allow you to securely reset
+            your password.
+          </p>
         </React.Fragment>
       )}
     </Fragment>

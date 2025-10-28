@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import React from 'react'
+import React from "react"
+import Link from "next/link"
 
-import { useAuth } from '../../../_providers/Auth'
-import classes from './index.module.scss'
+import { useAuth } from "../../../_providers/Auth"
+import classes from "./index.module.scss"
 
 export const HeaderNav: React.FC = () => {
   const { user } = useAuth()
@@ -18,7 +18,7 @@ export const HeaderNav: React.FC = () => {
         user === undefined && classes.hide,
       ]
         .filter(Boolean)
-        .join(' ')}
+        .join(" ")}
     >
       {user && (
         <React.Fragment>

@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
 import React, { Fragment } from "react"
 import Link from "next/link"
 import type { Post } from "@/payload-types"
 
-import { Media } from "@/components/Media"
 import { cn } from "@/lib/utils"
+import { Media } from "@/components/Media"
 import useClickableCard from "@/utilities/useClickableCard"
 
 export type CardPostData = Pick<Post, "slug" | "categories" | "meta" | "title">

@@ -1,16 +1,16 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import { anyone } from "@/access/anyone";
-import { admins } from "@/access/admins";
+import path from "path"
+import { fileURLToPath } from "url"
+import { admins } from "@/access/admins"
+import { anyone } from "@/access/anyone"
 import {
   FixedToolbarFeature,
   InlineToolbarFeature,
   lexicalEditor,
-} from "@payloadcms/richtext-lexical";
-import type { CollectionConfig } from "payload";
+} from "@payloadcms/richtext-lexical"
+import type { CollectionConfig } from "payload"
 
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -35,7 +35,7 @@ export const Media: CollectionConfig = {
             ...rootFeatures,
             FixedToolbarFeature(),
             InlineToolbarFeature(),
-          ];
+          ]
         },
       }),
     },
@@ -79,4 +79,4 @@ export const Media: CollectionConfig = {
       },
     ],
   },
-};
+}

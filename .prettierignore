@@ -1,0 +1,56 @@
+# Ignore artifacts:
+node_modules
+build
+dist
+coverage
+.next
+out
+public/build
+tmp
+temp
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore config and env files
+.env
+.env.*
+*.config.js
+*.config.cjs
+*.config.mjs
+
+# Ignore version control directories
+.git
+.hg
+.svn
+
+# Ignore generated files
+*.min.js
+*.bundle.js
+*.snap
+*.log
+
+# Ignore assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.ico
+*.ttf
+*.woff
+*.woff2
+*.eot
+
+# Ignore IDE settings
+.vscode
+.idea
+
+# Ignore custom patterns (adjust as needed)
+static/*
+public/*
+docs/*
+.dockerignore

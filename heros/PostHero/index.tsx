@@ -1,19 +1,19 @@
-import React from "react";
-import type { Post } from "@/payload-types";
-import { formatDateTime } from "@/utilities/formatDateTime";
+import React from "react"
+import type { Post } from "@/payload-types"
 
-import { Media } from "@/components/Media";
-import { formatAuthors } from "@/utilities/formatAuthors";
+import { Media } from "@/components/Media"
+import { formatAuthors } from "@/utilities/formatAuthors"
+import { formatDateTime } from "@/utilities/formatDateTime"
 
 export const PostHero: React.FC<{
-  post: Post;
+  post: Post
 }> = ({ post }) => {
-  const { categories, heroImage, populatedAuthors, publishedAt, title } = post;
+  const { categories, heroImage, populatedAuthors, publishedAt, title } = post
 
   const hasAuthors =
     populatedAuthors &&
     populatedAuthors.length > 0 &&
-    formatAuthors(populatedAuthors) !== "";
+    formatAuthors(populatedAuthors) !== ""
 
   return (
     <div className="relative flex items-end">
@@ -22,20 +22,20 @@ export const PostHero: React.FC<{
           <div className="mb-6 text-sm uppercase">
             {categories?.map((category, index) => {
               if (typeof category === "object" && category !== null) {
-                const { title: categoryTitle } = category;
+                const { title: categoryTitle } = category
 
-                const titleToUse = categoryTitle || "Untitled category";
+                const titleToUse = categoryTitle || "Untitled category"
 
-                const isLast = index === categories.length - 1;
+                const isLast = index === categories.length - 1
 
                 return (
                   <React.Fragment key={index}>
                     {titleToUse}
                     {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
                   </React.Fragment>
-                );
+                )
               }
-              return null;
+              return null
             })}
           </div>
 
@@ -77,5 +77,5 @@ export const PostHero: React.FC<{
         <div className="pointer-events-none absolute bottom-0 left-0 h-1/2 w-full bg-linear-to-t from-black to-transparent" />
       </div>
     </div>
-  );
-};
+  )
+}

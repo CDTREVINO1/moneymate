@@ -1,6 +1,7 @@
 import React from "react"
-import RichText from "@/components/RichText"
 import { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical"
+
+import RichText from "@/components/RichText"
 
 import { Width } from "../Width"
 

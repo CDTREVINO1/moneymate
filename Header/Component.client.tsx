@@ -13,7 +13,7 @@ interface HeaderClientProps {
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   return (
-    <header className="container relative z-20">
+    <header className="relative z-20 container">
       <div className="flex justify-between py-8">
         <Link href="/">
           <Logo
@@ -25,5 +25,5 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         <HeaderNav data={data} />
       </div>
     </header>
-  );
+  )
 }

@@ -1,31 +1,30 @@
-'use client'
+"use client"
 
-import type { ElementType } from 'react'
+import type { ElementType } from "react"
+import React from "react"
+import Link from "next/link"
 
-import Link from 'next/link'
-import React from 'react'
-
-import classes from './index.module.scss'
+import classes from "./index.module.scss"
 
 export type Props = {
-  appearance?: 'default' | 'primary' | 'secondary'
+  appearance?: "default" | "primary" | "secondary"
   className?: string
   disabled?: boolean
-  el?: 'a' | 'button' | 'link'
+  el?: "a" | "button" | "link"
   href?: string
   invert?: boolean
   label?: string
   newTab?: boolean
   onClick?: () => void
-  type?: 'button' | 'submit'
+  type?: "button" | "submit"
 }
 
 export const Button: React.FC<Props> = ({
-  type = 'button',
+  type = "button",
   appearance,
   className: classNameFromProps,
   disabled,
-  el: elFromProps = 'link',
+  el: elFromProps = "link",
   href,
   invert,
   label,
@@ -33,7 +32,9 @@ export const Button: React.FC<Props> = ({
   onClick,
 }) => {
   let el = elFromProps
-  const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
+  const newTabProps = newTab
+    ? { rel: "noopener noreferrer", target: "_blank" }
+    : {}
 
   const className = [
     classes.button,
@@ -42,7 +43,7 @@ export const Button: React.FC<Props> = ({
     invert && classes[`${appearance}--invert`],
   ]
     .filter(Boolean)
-    .join(' ')
+    .join(" ")
 
   const content = (
     <div className={classes.content}>
@@ -50,11 +51,18 @@ export const Button: React.FC<Props> = ({
     </div>
   )
 
-  if (onClick || type === 'submit') {el = 'button'}
+  if (onClick || type === "submit") {
+    el = "button"
+  }
 
-  if (el === 'link') {
+  if (el === "link") {
     return (
-      <Link className={className} href={href || ''} {...newTabProps} onClick={onClick}>
+      <Link
+        className={className}
+        href={href || ""}
+        {...newTabProps}
+        onClick={onClick}
+      >
         {content}
       </Link>
     )
