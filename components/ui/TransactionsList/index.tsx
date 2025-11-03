@@ -1,11 +1,11 @@
 "use client"
 
-import { useTransactions } from "@/context/TransactionContext"
 import { format } from "date-fns"
 import { Loader2, Trash2 } from "lucide-react"
 
 import { getCategoryColor, getCategoryLabel } from "@/lib/categories"
 import { Button } from "@/components/ui/button"
+import { useTransactions } from "@/context/TransactionContext"
 
 import EditTransactionModal from "../EditTransactionModal"
 import { TransactionFormModal } from "../TransactionFormModal"

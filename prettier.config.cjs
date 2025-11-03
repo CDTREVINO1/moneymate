@@ -20,6 +20,7 @@ module.exports = {
     "^@/hooks/.*$",
     "^@/components/ui/.*$",
     "^@/components/.*$",
+    "^@/context/.*$",
     "^@/styles/.*$",
     "^@/app/.*$",
     "^@/utilities/.*$",
